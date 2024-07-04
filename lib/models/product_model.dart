@@ -15,13 +15,13 @@ class Product {
 
 List<Product> productList = [
   Product(
-      name: "ismim",
+      name: "product 0",
       description: "açıklama",
       createDate: DateTime(2024, 7, 02),
       count: 10,
       unit: 1),
   Product(
-      name: "ismim",
+      name: "product 1",
       description: "açıklama",
       createDate: DateTime(2024, 7, 02),
       count: 10,
