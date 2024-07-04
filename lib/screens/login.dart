@@ -46,7 +46,7 @@ class LoginPage extends StatelessWidget {
             ),
             CustomFormWidget(
                 controller: email,
-                labelText: "Mail",
+                labelText: "email".tr(),
                 icon: const Icon(Icons.email,
                     color: Color.fromARGB(255, 99, 78, 145))),
             Padding(
@@ -61,7 +61,7 @@ class LoginPage extends StatelessWidget {
                             icon: Icon(isObscureController.isObscure.value
                                 ? Icons.visibility
                                 : Icons.visibility_off)),
-                        labelText: "Şifre",
+                        labelText: "password".tr(),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(22),
                         ),
@@ -70,7 +70,7 @@ class LoginPage extends StatelessWidget {
                   )),
             ),
             CustomButtonWidget(
-              btnText: "Giriş Yap",
+              btnText: "login".tr(),
               onpressed: () {
                 Get.toNamed(RoutesClass.home);
               },
@@ -81,7 +81,7 @@ class LoginPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   // const LocaleText(text: LocaleKeys.splash_hello), //death code temizlenecek
-                  Text(""),
+                  Text("Don't have an account?".tr()),
                   TextButton(
                     onPressed: () {
                       Get.toNamed(RoutesClass.signup);

@@ -1,7 +1,9 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/get_navigation.dart';
+import 'package:imtapp/controllers/passwordController.dart';
 import 'package:imtapp/models/product_model.dart';
 import 'package:imtapp/widgets/custom_button_widget.dart';
 import 'package:imtapp/widgets/custom_form_widget.dart';
@@ -45,7 +47,7 @@ class HomePage extends StatelessWidget {
               child: TextField(
                 onChanged: (value) {},
                 controller: search,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: "Listeyi ara",
                   hintText: "Aramak için yaz",
                   prefixIcon: Icon(Icons.search),
@@ -67,26 +69,30 @@ class HomePage extends StatelessWidget {
                       SlidableAction(
                         backgroundColor: Colors.green,
                         icon: Icons.edit_document,
-                        label: "Düzenle",
+                        label: "edit".tr(),
                         onPressed: (context) =>
                             _onDismissed(index, Actions.edit),
                       ),
                       SlidableAction(
                         backgroundColor: Colors.red,
                         icon: Icons.delete,
-                        label: "Sil",
+                        label: "delete".tr(),
                         onPressed: (context) {
-                          showDialogSlide(context, "Sil",
-                              "Ürünü silmek istediğinize emin misiniz ?");
+                          showDialogSlide(
+                              context,
+                              "delete".tr(),
+                              "Are you sure you want to delete the product?"
+                                  .tr());
                         },
                       ),
                     ],
                   ),
                   child: ListTile(
-                    title: Text("İsim: ${_product.name}"),
-                    subtitle: Text("Açıklama: ${_product.description}"),
+                    title: Text("${_product.name}"),
+                    subtitle:
+                        Text("description:".tr() + "${_product.description}"),
                     trailing: Text(
-                      "${_product.count} Adet",
+                      "${_product.count}" + "quantity".tr(),
                       style: TextStyle(fontSize: 17),
                     ),
                     leading: const Icon(Icons.tag),
@@ -116,13 +122,13 @@ class HomePage extends StatelessWidget {
               onPressed: () {
                 Get.back();
               },
-              child: Text("Evet"),
+              child: Text("yes".tr()),
             ),
             TextButton(
               onPressed: () {
                 Get.back();
               },
-              child: Text("Hayır"),
+              child: Text("no".tr()),
             ),
           ],
         );
@@ -143,17 +149,17 @@ class HomePage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  "Ürün Ekle",
+                  "Add Product".tr(),
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 CustomFormWidget(
                   controller: name,
-                  labelText: "Ürün Adı",
+                  labelText: "name".tr(),
                   icon: const Icon(Icons.tag),
                 ),
                 CustomFormWidget(
                   controller: description,
-                  labelText: "Ürün Açıklaması",
+                  labelText: "description".tr(),
                   icon: const Icon(Icons.description),
                 ),
                 Padding(
@@ -173,7 +179,7 @@ class HomePage extends StatelessWidget {
                     },
                     controller: createDate,
                     decoration: InputDecoration(
-                      labelText: "Tarih",
+                      labelText: "date".tr(),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(22),
                       ),
@@ -184,17 +190,17 @@ class HomePage extends StatelessWidget {
                 ),
                 CustomFormWidget(
                   controller: count,
-                  labelText: "Sayı",
+                  labelText: "quantity".tr(),
                   icon: const Icon(Icons.format_list_numbered),
                 ),
                 CustomFormWidget(
                   controller: unit,
-                  labelText: "Birim",
+                  labelText: "unit".tr(),
                   icon: const Icon(Icons.ad_units),
                 ),
-                const Padding(
+                Padding(
                   padding: EdgeInsets.only(bottom: 35),
-                  child: CustomButtonWidget(btnText: "Kaydet"),
+                  child: CustomButtonWidget(btnText: "save".tr()),
                 ),
               ],
             ),

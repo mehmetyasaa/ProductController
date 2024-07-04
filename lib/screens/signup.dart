@@ -1,4 +1,5 @@
 // ignore: file_names
+import 'package:easy_localization/easy_localization.dart';
 import "package:flutter/material.dart";
 import 'package:get/route_manager.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -19,7 +20,6 @@ class SignupPage extends StatelessWidget {
   Widget build(BuildContext context) {
     const appName = "ImtApp";
     const animationSignupAsset = 'assets/lottie/AnimationSignup.json';
-    const signupText = 'Üye Ol';
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(15.0),
@@ -37,39 +37,39 @@ class SignupPage extends StatelessWidget {
             ),
             customTextForm(
               name,
-              "İsim",
+              "name".tr(),
               const Icon(Icons.account_box,
                   color: Color.fromARGB(255, 99, 78, 145)),
             ),
             customTextForm(
               email,
-              "Mail",
+              "email".tr(),
               const Icon(Icons.email, color: Color.fromARGB(255, 99, 78, 145)),
             ),
             customTextForm(
               phone,
-              "Telefon",
+              "phone".tr(),
               const Icon(Icons.phone, color: Color.fromARGB(255, 99, 78, 145)),
             ),
             customTextForm(
               password,
-              "Şifre",
+              "password".tr(),
               const Icon(Icons.password,
                   color: Color.fromARGB(255, 99, 78, 145)),
             ),
-            const CustomButtonWidget(btnText: signupText),
+            CustomButtonWidget(btnText: "signup".tr()),
             Padding(
               padding: const EdgeInsets.only(top: 5),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text("Zaten üye misiniz?"),
+                  Text("Already have an Account ?".tr()),
                   TextButton(
                     onPressed: () {
                       Get.toNamed(RoutesClass.login);
                     },
-                    child: const Text(
-                      "Giriş Yap",
+                    child: Text(
+                      "login".tr(),
                       style: TextStyle(
                         color: Colors.purple,
                       ),

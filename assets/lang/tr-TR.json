@@ -1,5 +1,22 @@
 {
     "Hello, World": "Merhaba, Dünya",
     "login": "Giriş Yap",
-    "signup": "Üye Ol"
+    "signup": "Üye Ol",
+    "Don't have an account?": "Hesabınız yok mu?",
+    "password": "Şifre",
+    "email": "E-Posta",
+    "Already have an Account ?": "Zaten bir hesabınız var mı ?",
+    "phone": "Telefon",
+    "name": "İsim",
+    "delete": "Sil",
+    "Are you sure you want to delete the product?": "Ürünü silmek istediğinize emin misiniz ?",
+    "edit": "Düzenle",
+    "save": "Kaydet",
+    "unit": "Birim",
+    "quantity": "Adet",
+    "date": "Tarih",
+    "description": "Açıklama",
+    "Add Product": "Ürün Ekle",
+    "yes": "Evet",
+    "no": "Hayır"
 }

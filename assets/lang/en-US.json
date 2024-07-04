@@ -1,5 +1,22 @@
 {
     "Hello, World": "Hello, World",
     "login": "Login",
-    "signup": "Signup"
+    "signup": "Signup",
+    "Don't have an account?": "Don't have an account?",
+    "password": "Password",
+    "email": "Email",
+    "Already have an Account ?": "Already have an Account ?",
+    "phone": "Phone",
+    "name": "Name",
+    "delete": "Delete",
+    "Are you sure you want to delete the product?": "Are you sure you want to delete the product?",
+    "edit": "Edit",
+    "save": "Save",
+    "unit": "Unit",
+    "quantity": "Quantity",
+    "date": "Date",
+    "description": "Description",
+    "Add Product": "Add Product",
+    "yes": "Yes",
+    "no": "No"
 }
