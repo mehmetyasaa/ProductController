@@ -14,11 +14,11 @@ class CustomButtonWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 15),
+      padding: EdgeInsets.only(top: 15),
       child: FilledButton.tonal(
         onPressed: onpressed,
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 110),
+          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 110),
           child: Text(
             btnText,
             style: GoogleFonts.lato(

@@ -1,3 +1,4 @@
+import 'package:board_datetime_picker/board_datetime_picker.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -114,11 +115,21 @@ class HomePage extends StatelessWidget {
                   padding: EdgeInsets.all(deviceWidth / 60),
                   child: TextFormField(
                     onTap: () async {
-                      DateTime? picked = await showDatePicker(
+                      DateTime? picked = await showBoardDateTimePicker(
                         context: context,
                         initialDate: DateTime.now(),
-                        firstDate: DateTime(2020),
-                        lastDate: DateTime(2030),
+                        pickerType: DateTimePickerType.datetime,
+                        options: BoardDateTimeOptions(
+                            languages: BoardPickerLanguages(
+                                locale: 'en'.tr(),
+                                today: 'today'.tr(),
+                                tomorrow: 'tommorrow'.tr(),
+                                now: 'now'.tr()),
+                            startDayOfWeek: DateTime.sunday,
+                            pickerFormat: PickerFormat.ymd,
+                            activeColor: const Color.fromARGB(255, 255, 147, 6),
+                            backgroundDecoration:
+                                BoxDecoration(color: Colors.white)),
                       );
 
                       if (picked != null) {
