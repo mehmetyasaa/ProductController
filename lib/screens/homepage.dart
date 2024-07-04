@@ -28,6 +28,7 @@ class HomePage extends StatelessWidget {
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Color.fromARGB(255, 253, 91, 22),
         onPressed: () {
           customBottomSheet(context);
         },
@@ -45,7 +46,7 @@ class HomePage extends StatelessWidget {
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.only(top: 70, right: 20, left: 20),
+              padding: const EdgeInsets.only(top: 20, right: 20, left: 20),
               child: TextField(
                 onChanged: (value) {
                   controller.filterSearchResult(value);
@@ -63,50 +64,18 @@ class HomePage extends StatelessWidget {
             ),
           ),
           Obx(() {
+            final Map<DateTime, List<Product>> groupedProducts =
+                controller.groupProductsByDate();
+            final List<DateTime> sortedDates = groupedProducts.keys.toList()
+              ..sort((a, b) => b.compareTo(a));
             return SliverList(
               delegate: SliverChildBuilderDelegate(
                 (context, index) {
-                  final _product = controller.filteredProducts[index];
-                  return Slidable(
-                    endActionPane: ActionPane(
-                      motion: StretchMotion(),
-                      children: [
-                        SlidableAction(
-                          backgroundColor: Colors.green,
-                          icon: Icons.edit_document,
-                          label: "edit".tr(),
-                          onPressed: (context) =>
-                              controller.onDismissed(index, Actions.edit),
-                        ),
-                        SlidableAction(
-                          backgroundColor: Colors.red,
-                          icon: Icons.delete,
-                          label: "delete".tr(),
-                          onPressed: (context) {
-                            controller.showDialogSlide(
-                                context,
-                                "delete".tr(),
-                                "Are you sure you want to delete the product?"
-                                    .tr());
-                          },
-                        ),
-                      ],
-                    ),
-                    child: ListTile(
-                      title: Text("${_product.name}"),
-                      subtitle: Text(
-                          "description".tr() + ": ${_product.description}"),
-                      trailing: Text(
-                        "${_product.count}" + "quantity".tr(),
-                        style: TextStyle(fontSize: 17),
-                      ),
-                      leading: const Icon(Icons.tag),
-                      contentPadding: const EdgeInsets.all(10),
-                      onTap: () {},
-                    ),
-                  );
+                  final DateTime date = sortedDates[index];
+                  final List<Product> products = groupedProducts[date]!;
+                  return DateProductWidget(date: date, products: products);
                 },
-                childCount: controller.filteredProducts.length,
+                childCount: sortedDates.length,
               ),
             );
           }),
@@ -194,6 +163,7 @@ class HomePage extends StatelessWidget {
   }
 }
 
+//dışarıya alınacak
 class HomeController extends GetxController {
   RxList<Product> filteredProducts = RxList<Product>(productList);
 
@@ -211,7 +181,22 @@ class HomeController extends GetxController {
     }
   }
 
-  void onDismissed(int index, Actions action) {
+  Map<DateTime, List<Product>> groupProductsByDate() {
+    Map<DateTime, List<Product>> groupedProducts = {};
+
+    for (var product in filteredProducts) {
+      DateTime dateKey = DateTime(product.createDate.year,
+          product.createDate.month, product.createDate.day);
+      if (!groupedProducts.containsKey(dateKey)) {
+        groupedProducts[dateKey] = [];
+      }
+      groupedProducts[dateKey]!.add(product);
+    }
+
+    return groupedProducts;
+  }
+
+  void onDismissed(Product product, Actions action) {
     // Implement your edit or delete functionality here
   }
 
@@ -239,6 +224,104 @@ class HomeController extends GetxController {
           ],
         );
       },
+    );
+  }
+}
+
+class DateProductWidget extends StatelessWidget {
+  final DateTime date;
+  final List<Product> products;
+
+  DateProductWidget({required this.date, required this.products});
+
+  @override
+  Widget build(BuildContext context) {
+    bool isToday = DateTime.now().year == date.year &&
+        DateTime.now().month == date.month &&
+        DateTime.now().day == date.day;
+
+    return Column(
+      children: [
+        Row(
+          children: [
+            SizedBox(
+              width: 60,
+              child: Column(
+                children: [
+                  Text(
+                    isToday
+                        ? "Bugün"
+                        : DateFormat('MMM').format(date), // Month or "Today"
+                    style: const TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 14,
+                        color: Color.fromARGB(255, 255, 77, 0)),
+                  ),
+                  if (!isToday)
+                    Text(
+                      DateFormat('d').format(date), // Day
+                      style: const TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.w700,
+                          color: Color.fromARGB(255, 255, 77, 0)),
+                    ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: Column(
+                children: products.map((product) {
+                  return Slidable(
+                    endActionPane: ActionPane(
+                      motion: const StretchMotion(),
+                      children: [
+                        SlidableAction(
+                          backgroundColor: Colors.green,
+                          icon: Icons.edit_document,
+                          label: "edit".tr(),
+                          onPressed: (context) => Get.find<HomeController>()
+                              .onDismissed(product, Actions.edit),
+                        ),
+                        SlidableAction(
+                          backgroundColor: Colors.red,
+                          icon: Icons.delete,
+                          label: "delete".tr(),
+                          onPressed: (context) {
+                            Get.find<HomeController>().showDialogSlide(
+                                context,
+                                "delete".tr(),
+                                "Are you sure you want to delete the product?"
+                                    .tr());
+                          },
+                        ),
+                      ],
+                    ),
+                    child: ListTile(
+                      title: Text(
+                        product.name,
+                        style: const TextStyle(
+                            fontWeight: FontWeight.w800, fontSize: 17),
+                      ),
+                      subtitle:
+                          Text("description".tr() + ": ${product.description}"),
+                      trailing: Text(
+                        "${product.count}" + " " + "quantity".tr(),
+                        style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
+                            color: Color.fromARGB(255, 255, 99, 9)),
+                      ),
+                      contentPadding: const EdgeInsets.all(10),
+                      onTap: () {},
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
+          ],
+        ),
+        const Divider(),
+      ],
     );
   }
 }

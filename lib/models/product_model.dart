@@ -21,9 +21,27 @@ List<Product> productList = [
       count: 10,
       unit: 1),
   Product(
-      name: "product 1",
+      name: "ürün 1",
       description: "açıklama",
       createDate: DateTime(2024, 7, 02),
+      count: 10,
+      unit: 1),
+  Product(
+      name: "denem 1",
+      description: "açıklama",
+      createDate: DateTime(2024, 7, 04),
+      count: 10,
+      unit: 1),
+  Product(
+      name: "denmee 3",
+      description: "açıklama",
+      createDate: DateTime(2024, 7, 03),
+      count: 10,
+      unit: 1),
+  Product(
+      name: "denmee 3",
+      description: "açıklama",
+      createDate: DateTime(2024, 6, 03),
       count: 10,
       unit: 1),
 ];
