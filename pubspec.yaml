@@ -19,6 +19,9 @@ dependencies:
   lottie: ^3.1.2
   google_fonts: ^6.2.1
   flutter_native_splash: ^2.4.0
+  flutter_slidable: ^3.1.0
+  easy_localization: ^3.0.7
+  auto_size_text: ^3.0.0
 
   uuid: ^4.4.0
 
@@ -26,7 +29,7 @@ flutter_native_splash:
   android: true
   ios: true
   web: false
-  background_image: "assets/image/imtLogo.png"
+  background_image: "assets/image/imtBackground.png"
   image: "assets/image/imt.png"
 dev_dependencies:
   flutter_test:
@@ -35,12 +38,14 @@ dev_dependencies:
   flutter_lints: ^4.0.0
 
 flutter:
+  generate: true
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/lottie/AnimationSignup.json
     - assets/lottie/AnimationLogin.json
+    - assets/lang/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

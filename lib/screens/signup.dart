@@ -2,6 +2,7 @@
 import "package:flutter/material.dart";
 import 'package:get/route_manager.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:imtapp/routes/routes.dart';
 import 'package:imtapp/screens/login.dart';
 import 'package:imtapp/widgets/custom_button_widget.dart';
 import 'package:lottie/lottie.dart';
@@ -65,7 +66,7 @@ class SignupPage extends StatelessWidget {
                   const Text("Zaten üye misiniz?"),
                   TextButton(
                     onPressed: () {
-                      Get.to(LoginPage());
+                      Get.toNamed(RoutesClass.login);
                     },
                     child: const Text(
                       "Giriş Yap",

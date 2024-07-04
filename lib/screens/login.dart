@@ -1,9 +1,17 @@
+import 'package:easy_localization/easy_localization.dart';
 import "package:flutter/material.dart";
-import 'package:get/get.dart';
+import 'package:get/get.dart'
+    hide
+        Trans; //getx ve easy local'de string.tr() kullanımı çakıştığından hide kullandım
+
 import 'package:google_fonts/google_fonts.dart';
+import 'package:imtapp/constants.dart';
 import 'package:imtapp/controllers/passwordController.dart';
+import 'package:imtapp/core/init/extension/string_extensions.dart';
+import 'package:imtapp/routes/routes.dart';
 import 'package:imtapp/screens/homepage.dart';
 import 'package:imtapp/screens/signup.dart';
+import 'package:imtapp/text/locale_text.dart';
 import 'package:imtapp/widgets/custom_button_widget.dart';
 import 'package:imtapp/widgets/custom_form_widget.dart';
 import 'package:lottie/lottie.dart';
@@ -64,7 +72,7 @@ class LoginPage extends StatelessWidget {
             CustomButtonWidget(
               btnText: "Giriş Yap",
               onpressed: () {
-                Get.to(HomePage());
+                Get.toNamed(RoutesClass.home);
               },
             ),
             Padding(
@@ -72,13 +80,14 @@ class LoginPage extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text("Üye değil misiniz?"),
+                  // const LocaleText(text: LocaleKeys.splash_hello), //death code temizlenecek
+                  Text(""),
                   TextButton(
                     onPressed: () {
-                      Get.to(SignupPage());
+                      Get.toNamed(RoutesClass.signup);
                     },
-                    child: const Text(
-                      "Kayıt Ol",
+                    child: Text(
+                      "signup".tr(),
                       style: TextStyle(
                         color: Colors.purple,
                       ),
