@@ -1,9 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/get_navigation.dart';
-import 'package:imtapp/controllers/passwordController.dart';
+import 'package:get/get.dart' hide Trans;
 import 'package:imtapp/models/product_model.dart';
 import 'package:imtapp/widgets/custom_button_widget.dart';
 import 'package:imtapp/widgets/custom_form_widget.dart';
@@ -20,14 +18,13 @@ class HomePage extends StatelessWidget {
   final TextEditingController unit = TextEditingController();
   final TextEditingController search = TextEditingController();
 
-  void filterSearchResult(String query) {
-    List<String> dummySearchList;
-  }
+  final HomeController controller = Get.put(HomeController());
 
   @override
   Widget build(BuildContext context) {
     final MediaQueryData mediaQueryData = MediaQuery.of(context);
     final double deviceWidth = mediaQueryData.size.width;
+    final double deviceHeight = mediaQueryData.size.height;
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
@@ -41,11 +38,18 @@ class HomePage extends StatelessWidget {
       ),
       body: CustomScrollView(
         slivers: <Widget>[
+          const SliverAppBar(
+            leading: Icon(Icons.menu),
+            title: Text("İletişim Yazılım"),
+            flexibleSpace: FlexibleSpaceBar(),
+          ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: EdgeInsets.only(top: 70, right: 20, left: 20),
+              padding: const EdgeInsets.only(top: 20, right: 20, left: 20),
               child: TextField(
-                onChanged: (value) {},
+                onChanged: (value) {
+                  controller.filterSearchResult(value);
+                },
                 controller: search,
                 decoration: const InputDecoration(
                   labelText: "Listeyi ara",
@@ -58,81 +62,56 @@ class HomePage extends StatelessWidget {
               ),
             ),
           ),
-          SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                final _product = productList[index];
-                return Slidable(
-                  endActionPane: ActionPane(
-                    motion: StretchMotion(),
-                    children: [
-                      SlidableAction(
-                        backgroundColor: Colors.green,
-                        icon: Icons.edit_document,
-                        label: "edit".tr(),
-                        onPressed: (context) =>
-                            _onDismissed(index, Actions.edit),
-                      ),
-                      SlidableAction(
-                        backgroundColor: Colors.red,
-                        icon: Icons.delete,
-                        label: "delete".tr(),
-                        onPressed: (context) {
-                          showDialogSlide(
-                              context,
-                              "delete".tr(),
-                              "Are you sure you want to delete the product?"
-                                  .tr());
-                        },
-                      ),
-                    ],
-                  ),
-                  child: ListTile(
-                    title: Text("${_product.name}"),
-                    subtitle:
-                        Text("description:".tr() + "${_product.description}"),
-                    trailing: Text(
-                      "${_product.count}" + "quantity".tr(),
-                      style: TextStyle(fontSize: 17),
+          Obx(() {
+            return SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (context, index) {
+                  final _product = controller.filteredProducts[index];
+                  return Slidable(
+                    endActionPane: ActionPane(
+                      motion: StretchMotion(),
+                      children: [
+                        SlidableAction(
+                          backgroundColor: Colors.green,
+                          icon: Icons.edit_document,
+                          label: "edit".tr(),
+                          onPressed: (context) =>
+                              controller.onDismissed(index, Actions.edit),
+                        ),
+                        SlidableAction(
+                          backgroundColor: Colors.red,
+                          icon: Icons.delete,
+                          label: "delete".tr(),
+                          onPressed: (context) {
+                            controller.showDialogSlide(
+                                context,
+                                "delete".tr(),
+                                "Are you sure you want to delete the product?"
+                                    .tr());
+                          },
+                        ),
+                      ],
                     ),
-                    leading: const Icon(Icons.tag),
-                    contentPadding: const EdgeInsets.all(10),
-                    onTap: () {},
-                  ),
-                );
-              },
-              childCount: productList.length,
-            ),
-          ),
+                    child: ListTile(
+                      title: Text("${_product.name}"),
+                      subtitle: Text(
+                          "description".tr() + ": ${_product.description}"),
+                      trailing: Text(
+                        "${_product.count}" + "quantity".tr(),
+                        style: TextStyle(fontSize: 17),
+                      ),
+                      leading: const Icon(Icons.tag),
+                      contentPadding: const EdgeInsets.all(10),
+                      onTap: () {},
+                    ),
+                  );
+                },
+                childCount: controller.filteredProducts.length,
+              ),
+            );
+          }),
         ],
       ),
-    );
-  }
-
-  Future<dynamic> showDialogSlide(
-      BuildContext context, String title, String content) {
-    return showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(title),
-          content: Text(content),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Get.back();
-              },
-              child: Text("yes".tr()),
-            ),
-            TextButton(
-              onPressed: () {
-                Get.back();
-              },
-              child: Text("no".tr()),
-            ),
-          ],
-        );
-      },
     );
   }
 
@@ -213,21 +192,53 @@ class HomePage extends StatelessWidget {
       backgroundColor: Colors.white,
     );
   }
+}
 
-  Padding productTextField(
-      TextEditingController controller, String text, Widget icon) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      child: TextFormField(
-        controller: controller,
-        decoration: InputDecoration(
-          border: UnderlineInputBorder(borderRadius: BorderRadius.circular(20)),
-          labelText: text,
-          prefixIcon: icon,
-        ),
-      ),
-    );
+class HomeController extends GetxController {
+  RxList<Product> filteredProducts = RxList<Product>(productList);
+
+  void filterSearchResult(String query) {
+    if (query.isNotEmpty) {
+      List<Product> filteredList = [];
+      for (var product in productList) {
+        if (product.name.toLowerCase().contains(query.toLowerCase())) {
+          filteredList.add(product);
+        }
+      }
+      filteredProducts.value = filteredList;
+    } else {
+      filteredProducts.value = productList;
+    }
   }
 
-  void _onDismissed(int index, Actions action) {}
+  void onDismissed(int index, Actions action) {
+    // Implement your edit or delete functionality here
+  }
+
+  Future<dynamic> showDialogSlide(
+      BuildContext context, String title, String content) {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(content),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Get.back();
+              },
+              child: Text("yes".tr()),
+            ),
+            TextButton(
+              onPressed: () {
+                Get.back();
+              },
+              child: Text("no".tr()),
+            ),
+          ],
+        );
+      },
+    );
+  }
 }

@@ -15,13 +15,55 @@ class Product {
 
 List<Product> productList = [
   Product(
-      name: "ismim",
+      name: "product 0",
       description: "açıklama",
       createDate: DateTime(2024, 7, 02),
       count: 10,
       unit: 1),
   Product(
-      name: "ismim",
+      name: "product 1",
+      description: "açıklama",
+      createDate: DateTime(2024, 7, 02),
+      count: 10,
+      unit: 1),
+  Product(
+      name: "product 2",
+      description: "açıklama",
+      createDate: DateTime(2024, 7, 02),
+      count: 10,
+      unit: 1),
+  Product(
+      name: "product 3",
+      description: "açıklama",
+      createDate: DateTime(2024, 7, 02),
+      count: 10,
+      unit: 1),
+  Product(
+      name: "product 4",
+      description: "açıklama",
+      createDate: DateTime(2024, 7, 02),
+      count: 10,
+      unit: 1),
+  Product(
+      name: "product 5",
+      description: "açıklama",
+      createDate: DateTime(2024, 7, 02),
+      count: 10,
+      unit: 1),
+  Product(
+      name: "ürün 1",
+      description: "açıklama",
+      createDate: DateTime(2024, 7, 02),
+      count: 10,
+      unit: 1),
+  Product(
+      name: "ürün 2",
+      description: "açıklama",
+      createDate: DateTime(2024, 7, 02),
+      count: 10,
+      unit: 1),
+  Product(
+      name: "ürün 3",
       description: "açıklama",
       createDate: DateTime(2024, 7, 02),
       count: 10,
