@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
-      initialRoute: RoutesClass.getLoginRoute(),
+      initialRoute: RoutesClass.getHomeRoute(),
       getPages: RoutesClass.routes,
     );
   }

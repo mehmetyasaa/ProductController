@@ -5,13 +5,8 @@ import 'package:get/get.dart'
         Trans; //getx ve easy local'de string.tr() kullanımı çakıştığından hide kullandım
 
 import 'package:google_fonts/google_fonts.dart';
-import 'package:imtapp/constants.dart';
 import 'package:imtapp/controllers/passwordController.dart';
-import 'package:imtapp/core/init/extension/string_extensions.dart';
 import 'package:imtapp/routes/routes.dart';
-import 'package:imtapp/screens/homepage.dart';
-import 'package:imtapp/screens/signup.dart';
-import 'package:imtapp/text/locale_text.dart';
 import 'package:imtapp/widgets/custom_button_widget.dart';
 import 'package:imtapp/widgets/custom_form_widget.dart';
 import 'package:lottie/lottie.dart';
@@ -88,7 +83,7 @@ class LoginPage extends StatelessWidget {
                     },
                     child: Text(
                       "signup".tr(),
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: Colors.purple,
                       ),
                     ),

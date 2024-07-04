@@ -8,13 +8,13 @@ class LocalScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Hello, World').tr(),
+        title: const Text('Hello, World').tr(),
       ),
       body: Center(
         child: Column(
           children: [
-            Text('login').tr(),
-            Text('signup').tr(),
+            const Text('login').tr(),
+            const Text('signup').tr(),
           ],
         ),
       ),

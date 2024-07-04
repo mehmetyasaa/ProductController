@@ -43,7 +43,7 @@ class HomePage extends StatelessWidget {
         slivers: <Widget>[
           SliverToBoxAdapter(
             child: Padding(
-              padding: EdgeInsets.only(top: 70, right: 20, left: 20),
+              padding: const EdgeInsets.only(top: 70, right: 20, left: 20),
               child: TextField(
                 onChanged: (value) {},
                 controller: search,
@@ -61,10 +61,10 @@ class HomePage extends StatelessWidget {
           SliverList(
             delegate: SliverChildBuilderDelegate(
               (context, index) {
-                final _product = productList[index];
+                final product = productList[index];
                 return Slidable(
                   endActionPane: ActionPane(
-                    motion: StretchMotion(),
+                    motion: const StretchMotion(),
                     children: [
                       SlidableAction(
                         backgroundColor: Colors.green,
@@ -88,12 +88,12 @@ class HomePage extends StatelessWidget {
                     ],
                   ),
                   child: ListTile(
-                    title: Text("${_product.name}"),
+                    title: Text(product.name),
                     subtitle:
-                        Text("description:".tr() + "${_product.description}"),
+                        Text("${"description:".tr()}${product.description}"),
                     trailing: Text(
-                      "${_product.count}" + "quantity".tr(),
-                      style: TextStyle(fontSize: 17),
+                      "${product.count}${"quantity".tr()}",
+                      style: const TextStyle(fontSize: 17),
                     ),
                     leading: const Icon(Icons.tag),
                     contentPadding: const EdgeInsets.all(10),
@@ -183,7 +183,7 @@ class HomePage extends StatelessWidget {
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(22),
                       ),
-                      prefixIcon: Icon(Icons.date_range),
+                      prefixIcon: const Icon(Icons.date_range),
                     ),
                     readOnly: true, // Prevents the keyboard from appearing
                   ),
@@ -199,7 +199,7 @@ class HomePage extends StatelessWidget {
                   icon: const Icon(Icons.ad_units),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(bottom: 35),
+                  padding: const EdgeInsets.only(bottom: 35),
                   child: CustomButtonWidget(btnText: "save".tr()),
                 ),
               ],
