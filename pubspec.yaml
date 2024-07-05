@@ -21,7 +21,6 @@ dependencies:
   flutter_native_splash: ^2.4.0
   flutter_slidable: ^3.1.0
   easy_localization: ^3.0.7
-  auto_size_text: ^3.0.0
   board_datetime_picker: ^2.0.0
 
   uuid: ^4.4.0

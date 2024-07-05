@@ -88,7 +88,8 @@ class HomePage extends StatelessWidget {
   Future<dynamic> customBottomSheet(BuildContext context) {
     final MediaQueryData mediaQueryData = MediaQuery.of(context);
     final double deviceWidth = mediaQueryData.size.width;
-
+    const List<String> list = <String>['Kg', 'G', 'L', 'Ml'];
+    String dropdownValue = list.first;
     return showModalBottomSheet(
       context: context,
       builder: (context) {
@@ -152,11 +153,51 @@ class HomePage extends StatelessWidget {
                   labelText: "quantity".tr(),
                   icon: const Icon(Icons.format_list_numbered),
                 ),
-                CustomFormWidget(
-                  controller: unit,
-                  labelText: "unit".tr(),
-                  icon: const Icon(Icons.ad_units),
+                // CustomFormWidget(
+                //   controller: unit,
+                //   labelText: "unit".tr(),
+                //   icon: const Icon(Icons.ad_units),
+                // ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 5.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(22.0),
+                      border: Border.all(
+                        color: Colors.black,
+                        style: BorderStyle.solid,
+                        width: 0.50,
+                      ),
+                    ),
+                    child: DropdownButtonFormField<String>(
+                      decoration: InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                          borderRadius: BorderRadius.circular(15.0),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                          borderRadius: BorderRadius.circular(15.0),
+                        ),
+                      ),
+                      value: dropdownValue,
+                      icon: const Icon(Icons.arrow_downward),
+                      elevation: 16,
+                      style: const TextStyle(color: Colors.black),
+                      onChanged: (String? newValue) {
+                        dropdownValue = newValue!;
+                      },
+                      items: list.map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    ),
+                  ),
                 ),
+
                 Padding(
                   padding: EdgeInsets.only(bottom: 35),
                   child: CustomButtonWidget(btnText: "save".tr()),
