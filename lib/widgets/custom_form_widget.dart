@@ -16,8 +16,7 @@ class CustomFormWidget extends StatelessWidget {
     final MediaQueryData mediaQueryData = MediaQuery.of(context);
     final double deviceWidth = mediaQueryData.size.width;
     return Padding(
-      padding: EdgeInsets.all(deviceWidth *
-          .02), //TODO: responsive tasarım olsun. statik değerler kullanma
+      padding: EdgeInsets.all(deviceWidth * .02),
       child: TextFormField(
         controller: controller,
         decoration: InputDecoration(

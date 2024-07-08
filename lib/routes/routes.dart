@@ -1,5 +1,4 @@
 import 'package:get/get_navigation/get_navigation.dart';
-import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:imtapp/screens/homepage.dart';
 import 'package:imtapp/screens/login.dart';
 import 'package:imtapp/screens/signup.dart';
@@ -20,11 +19,11 @@ class RoutesClass {
         name: login,
         page: () => LoginPage(),
         transition: Transition.fade,
-        transitionDuration: Duration(seconds: 1)),
+        transitionDuration: const Duration(seconds: 1)),
     GetPage(
         name: signup,
         page: () => SignupPage(),
         transition: Transition.fade,
-        transitionDuration: Duration(seconds: 1)),
+        transitionDuration: const Duration(seconds: 1)),
   ];
 }

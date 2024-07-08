@@ -2,7 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
-import 'package:imtapp/constants.dart';
+import 'package:imtapp/lang/constants.dart';
 import 'package:imtapp/routes/routes.dart';
 
 void main() async {
@@ -17,7 +17,6 @@ void main() async {
   FlutterNativeSplash.remove();
 
   runApp(EasyLocalization(
-    child: MyApp(),
     supportedLocales: const [
       LocaleConstants.trLocale,
       LocaleConstants.enLocale,
@@ -25,6 +24,7 @@ void main() async {
     saveLocale: true,
     fallbackLocale: LocaleConstants.enLocale,
     path: LocaleConstants.localePath,
+    child: const MyApp(),
   ));
 }
 
