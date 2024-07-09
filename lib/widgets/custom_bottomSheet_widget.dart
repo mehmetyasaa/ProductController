@@ -1,9 +1,13 @@
+import 'dart:js_interop';
+
 import 'package:flutter/material.dart';
 import 'package:board_datetime_picker/board_datetime_picker.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:get/get.dart' hide Trans;
+import 'package:imtapp/models/product_model.dart';
 import 'package:imtapp/service/product_service.dart';
-import 'package:imtapp/widgets/custom_button_widget.dart';
 import 'package:imtapp/widgets/custom_form_widget.dart';
+import 'package:imtapp/controllers/home_controller.dart';
 
 class CustomBottomSheetWidget extends StatelessWidget {
   final TextEditingController name;
@@ -28,8 +32,6 @@ class CustomBottomSheetWidget extends StatelessWidget {
     final MediaQueryData mediaQueryData = MediaQuery.of(context);
     final double deviceWidth = mediaQueryData.size.width;
     const List<String> list = <String>['Kg', 'G', 'L', 'Ml'];
-
-    // final dateFormat = DateTime.parse(createDate.text);
 
     return Wrap(
       children: [
@@ -134,7 +136,7 @@ class CustomBottomSheetWidget extends StatelessWidget {
               padding: const EdgeInsets.only(bottom: 35),
               child: CustomButtonWidget(
                 btnText: "save".tr(),
-                onPressed: () {
+                onPressed: () async {
                   if (name.text.isEmpty ||
                       description.text.isEmpty ||
                       count.text.isEmpty ||
@@ -144,18 +146,20 @@ class CustomBottomSheetWidget extends StatelessWidget {
 
                   int countValue = int.tryParse(count.text) ?? 0;
 
-                  ProductsService().create(
-                      name.text,
-                      description.text,
-                      DateTime.parse(createDate
-                          .text), // Use DateTime.parse for string date
-                      countValue,
-                      dropdownValue);
+                  Product newProduct = await ProductsService().create(
+                    name.text,
+                    description.text,
+                    DateTime.parse(createDate.text),
+                    countValue,
+                    dropdownValue,
+                  );
+                  name.text = "";
+                  description.text = "";
+                  createDate.text = "";
+                  count.text = "";
 
-                  //2024-07-09T00:00:00.000
-
-                  // Optionally, you can close the bottom sheet here
-                  Navigator.of(context).pop();
+                  Get.find<HomeController>().addProduct(newProduct);
+                  Get.back();
                 },
               ),
             ),

@@ -25,7 +25,7 @@ class DateProductWidget extends StatelessWidget {
         DateTime.now().day == date.day;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 6),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -37,7 +37,7 @@ class DateProductWidget extends StatelessWidget {
                   isToday ? "today".tr() : DateFormat('MMM').format(date),
                   style: const TextStyle(
                       fontWeight: FontWeight.w700,
-                      fontSize: 12,
+                      fontSize: 15,
                       color: Color.fromARGB(255, 255, 77, 0)),
                 ),
                 if (!isToday)
@@ -108,10 +108,8 @@ class DateProductWidget extends StatelessWidget {
 
   void onDismissed(Product product, Actions action) {
     if (action == Actions.delete) {
-      // Implement delete functionality
       Get.find<HomeController>().deleteProduct(product);
     } else if (action == Actions.edit) {
-      // Implement edit functionality
       Get.find<HomeController>().editProduct(product);
     }
   }

@@ -55,9 +55,8 @@ class HomePage extends StatelessWidget {
       ),
       body: Obx(() {
         if (controller.productList.isEmpty) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         } else {
-          // Group products by date
           final Map<String, List<Product>> groupedProducts =
               controller.groupProductsByDate();
           final List<String> sortedDates = groupedProducts.keys.toList()
@@ -66,7 +65,7 @@ class HomePage extends StatelessWidget {
           return CustomScrollView(
             slivers: <Widget>[
               SliverAppBar(
-                expandedHeight: 80,
+                expandedHeight: 60,
                 title: const Text("İletişim Yazılım"),
                 flexibleSpace: FlexibleSpaceBar(
                   background: ClipRRect(
@@ -126,7 +125,7 @@ class HomePage extends StatelessWidget {
       return DateFormat('yyyy-M-d').parse(dateString);
     } catch (e) {
       print('Error parsing date: $e');
-      return DateTime.now(); // Fallback to current date if parsing fails
+      return DateTime.now();
     }
   }
 }

@@ -13,15 +13,9 @@ class HomeController extends GetxController {
     fetchProducts();
   }
 
-  void deleteProduct(Product product) {
-    // Your code to delete the product
-    print('Product deleted: ${product.name}');
-  }
+  void deleteProduct(Product product) {}
 
-  void editProduct(Product product) {
-    // Your code to edit the product
-    print('Edit product: ${product.name}');
-  }
+  void editProduct(Product product) {}
 
   void fetchProducts() async {
     try {
@@ -41,6 +35,11 @@ class HomeController extends GetxController {
     } catch (e) {
       print('Error getting products: $e');
     }
+  }
+
+  void addProduct(Product product) {
+    productList.add(product);
+    filterSearchResult('');
   }
 
   void filterSearchResult(String query) {
