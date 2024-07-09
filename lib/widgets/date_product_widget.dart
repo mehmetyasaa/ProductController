@@ -1,10 +1,10 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart' hide Trans;
+import 'package:intl/intl.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:imtapp/controllers/home_controller.dart';
 import 'package:imtapp/models/product_model.dart';
-import 'package:imtapp/screens/homepage.dart';
 
 enum Actions { delete, edit }
 
@@ -13,7 +13,10 @@ class DateProductWidget extends StatelessWidget {
   final List<Product> products;
 
   const DateProductWidget(
-      {super.key, required this.date, required this.products});
+      {super.key,
+      required this.date,
+      required this.products,
+      required String formattedDate});
 
   @override
   Widget build(BuildContext context) {
@@ -57,20 +60,16 @@ class DateProductWidget extends StatelessWidget {
                     children: [
                       SlidableAction(
                           backgroundColor: Colors.green,
-                          icon: Icons.edit_document,
+                          icon: Icons.edit,
                           label: "edit".tr(),
-                          onPressed: (context) => Get.find<HomeController>()),
+                          onPressed: (context) =>
+                              onDismissed(product, Actions.edit)),
                       SlidableAction(
                         backgroundColor: Colors.red,
                         icon: Icons.delete,
                         label: "delete".tr(),
-                        onPressed: (context) {
-                          Get.find<HomeController>().showDialogSlide(
-                              context,
-                              "delete".tr(),
-                              "Are you sure you want to delete the product?"
-                                  .tr());
-                        },
+                        onPressed: (context) =>
+                            onDismissed(product, Actions.delete),
                       ),
                     ],
                   ),
@@ -89,7 +88,7 @@ class DateProductWidget extends StatelessWidget {
                           "${"description".tr()} : ${product.description}"),
                     ),
                     trailing: Text(
-                      "${product.count}  " "quantity".tr(),
+                      "${product.count}  ${"quantity".tr()}",
                       style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w700,
@@ -106,8 +105,14 @@ class DateProductWidget extends StatelessWidget {
       ),
     );
   }
-}
 
-void onDismissed(Product product, Actions action) {
-  // Implement your edit or delete functionality here
+  void onDismissed(Product product, Actions action) {
+    if (action == Actions.delete) {
+      // Implement delete functionality
+      Get.find<HomeController>().deleteProduct(product);
+    } else if (action == Actions.edit) {
+      // Implement edit functionality
+      Get.find<HomeController>().editProduct(product);
+    }
+  }
 }

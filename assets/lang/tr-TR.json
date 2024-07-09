@@ -23,5 +23,8 @@
     "today": "Bugün",
     "tommorrow": "Yarın",
     "now": "Şimdi",
-    "en": "tr"
+    "en": "tr",
+    "The email address is badly formatted.": "E-posta adresi hatalı biçimlendirilmiş.",
+    "The password is invalid or the user does not have a password.": "Parola geçersizdir veya kullanıcının parolası yoktur.",
+    "The supplied auth credential is malformed or has expired.": "Sağlanan kimlik doğrulama bilgisi hatalı biçimlendirilmiş veya süresi dolmuş."
 }

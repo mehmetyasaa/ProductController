@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
 import 'package:get/get.dart'
     hide
@@ -6,6 +7,7 @@ import 'package:get/get.dart'
 
 import 'package:google_fonts/google_fonts.dart';
 import 'package:imtapp/controllers/password_controller.dart';
+import 'package:imtapp/firebase/auth.dart';
 import 'package:imtapp/routes/routes.dart';
 import 'package:imtapp/widgets/custom_button_widget.dart';
 import 'package:imtapp/widgets/custom_form_widget.dart';
@@ -17,6 +19,23 @@ class LoginPage extends StatelessWidget {
   final TextEditingController email = TextEditingController();
   final TextEditingController password = TextEditingController();
   final isActive = false;
+  String? errorMessage = "";
+
+  Future<void> signInWithEmailAndPassword(BuildContext context) async {
+    try {
+      await Auth().signInWithEmailAndPassword(
+        email: email.text,
+        password: password.text,
+      );
+      Get.toNamed(RoutesClass.home);
+    } on FirebaseAuthException catch (e) {
+      errorMessage = e.message;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(errorMessage?.tr() ?? 'Unknown error')),
+      );
+      print(errorMessage);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,9 +85,10 @@ class LoginPage extends StatelessWidget {
             ),
             CustomButtonWidget(
               btnText: "login".tr(),
-              onpressed: () {
-                Get.toNamed(RoutesClass.home);
+              onpressed: () async {
+                await signInWithEmailAndPassword(context);
               },
+              onPressed: () {},
             ),
             Padding(
               padding: const EdgeInsets.only(top: 5),

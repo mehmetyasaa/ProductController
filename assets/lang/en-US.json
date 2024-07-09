@@ -23,5 +23,8 @@
     "today": "Today",
     "tommorrow": "Tommorrow",
     "now": "now",
-    "en": "en"
+    "en": "en",
+    "The email address is badly formatted.": "The email address is badly formatted.",
+    "The password is invalid or the user does not have a password.": "The password is invalid or the user does not have a password.",
+    "The supplied auth credential is malformed or has expired.": "The supplied auth credential is malformed or has expired."
 }

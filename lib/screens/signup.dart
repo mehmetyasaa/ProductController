@@ -3,6 +3,7 @@ import 'package:easy_localization/easy_localization.dart';
 import "package:flutter/material.dart";
 import 'package:get/route_manager.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:imtapp/firebase/auth.dart';
 import 'package:imtapp/routes/routes.dart';
 import 'package:imtapp/widgets/custom_button_widget.dart';
 import 'package:lottie/lottie.dart';
@@ -56,7 +57,18 @@ class SignupPage extends StatelessWidget {
               const Icon(Icons.password,
                   color: Color.fromARGB(255, 99, 78, 145)),
             ),
-            CustomButtonWidget(btnText: "signup".tr()),
+            CustomButtonWidget(
+              btnText: "signup".tr(),
+              onpressed: () {
+                Auth().createUserWithEmailAndPassword(
+                    email: email.text,
+                    password: password.text,
+                    displayName: name.text,
+                    phone: int.parse(phone.text));
+                Get.toNamed("/");
+              },
+              onPressed: () {},
+            ),
             Padding(
               padding: const EdgeInsets.only(top: 5),
               child: Row(

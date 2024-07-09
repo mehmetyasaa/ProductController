@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
@@ -12,10 +13,11 @@ void main() async {
   FlutterNativeSplash.preserve(
       widgetsBinding: WidgetsFlutterBinding.ensureInitialized());
   await Future.delayed(
-    const Duration(seconds: 5),
+    const Duration(seconds: 3),
   );
   FlutterNativeSplash.remove();
 
+  await Firebase.initializeApp();
   runApp(EasyLocalization(
     supportedLocales: const [
       LocaleConstants.trLocale,
@@ -43,7 +45,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
-      initialRoute: RoutesClass.getLoginRoute(),
+      initialRoute: RoutesClass.getHomeRoute(),
       getPages: RoutesClass.routes,
     );
   }

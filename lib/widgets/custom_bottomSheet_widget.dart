@@ -1,6 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:board_datetime_picker/board_datetime_picker.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/material.dart';
+import 'package:imtapp/service/product_service.dart';
 import 'package:imtapp/widgets/custom_button_widget.dart';
 import 'package:imtapp/widgets/custom_form_widget.dart';
 
@@ -35,7 +36,7 @@ class CustomBottomSheetWidget extends StatelessWidget {
           children: [
             Text(
               "Add Product".tr(),
-              style: Theme.of(context).textTheme.titleLarge,
+              style: Theme.of(context).textTheme.bodyMedium,
             ),
             CustomFormWidget(
               controller: name,
@@ -59,7 +60,7 @@ class CustomBottomSheetWidget extends StatelessWidget {
                       languages: BoardPickerLanguages(
                         locale: 'en'.tr(),
                         today: 'today'.tr(),
-                        tomorrow: 'tommorrow'.tr(),
+                        tomorrow: 'tomorrow'.tr(),
                         now: 'now'.tr(),
                       ),
                       startDayOfWeek: DateTime.sunday,
@@ -129,11 +130,63 @@ class CustomBottomSheetWidget extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.only(bottom: 35),
-              child: CustomButtonWidget(btnText: "save".tr()),
+              child: CustomButtonWidget(
+                btnText: "save".tr(),
+                onPressed: () {
+                  // Validate and save the product
+                  if (name.text.isEmpty ||
+                      description.text.isEmpty ||
+                      count.text.isEmpty ||
+                      createDate.text.isEmpty) {
+                    // Handle validation
+                    return;
+                  }
+
+                  // Convert count.text to int safely
+                  int countValue = int.tryParse(count.text) ?? 0;
+
+                  // Call ProductService to create the product
+                  ProductsService().create(
+                      name.text,
+                      description.text,
+                      DateTime.parse(createDate
+                          .text), // Use DateTime.parse for string date
+                      countValue,
+                      dropdownValue);
+
+                  // Optionally, you can close the bottom sheet here
+                  Navigator.of(context).pop();
+                },
+              ),
             ),
           ],
         ),
       ],
+    );
+  }
+}
+
+class CustomButtonWidget extends StatelessWidget {
+  const CustomButtonWidget({
+    Key? key,
+    required this.btnText,
+    required this.onPressed,
+  }) : super(key: key);
+
+  final String btnText;
+  final void Function() onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: onPressed,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 110),
+        child: Text(
+          btnText,
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
+      ),
     );
   }
 }

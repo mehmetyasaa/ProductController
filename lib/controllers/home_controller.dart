@@ -1,11 +1,47 @@
-import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart' hide Trans;
-import 'package:get/get_state_manager/src/simple/get_controllers.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/get.dart';
 import 'package:imtapp/models/product_model.dart';
+import 'package:intl/intl.dart';
 
 class HomeController extends GetxController {
-  RxList<Product> filteredProducts = RxList<Product>(productList);
+  RxList<Product> productList = RxList<Product>([]);
+  RxList<Product> filteredProducts = RxList<Product>([]);
+
+  @override
+  void onInit() {
+    super.onInit();
+    fetchProducts();
+  }
+
+  void deleteProduct(Product product) {
+    // Your code to delete the product
+    print('Product deleted: ${product.name}');
+  }
+
+  void editProduct(Product product) {
+    // Your code to edit the product
+    print('Edit product: ${product.name}');
+  }
+
+  void fetchProducts() async {
+    try {
+      QuerySnapshot snapshot =
+          await FirebaseFirestore.instance.collection('products').get();
+      List<Product> products = snapshot.docs.map((doc) {
+        return Product(
+          name: doc['name'],
+          description: doc['description'],
+          createDate: doc['createDate'],
+          count: doc['count'],
+          unit: doc['unit'],
+        );
+      }).toList();
+      productList.value = products;
+      filteredProducts.value = products;
+    } catch (e) {
+      print('Error getting products: $e');
+    }
+  }
 
   void filterSearchResult(String query) {
     if (query.isNotEmpty) {
@@ -21,45 +57,23 @@ class HomeController extends GetxController {
     }
   }
 
-  Map<DateTime, List<Product>> groupProductsByDate() {
-    Map<DateTime, List<Product>> groupedProducts = {};
+  Map<String, List<Product>> groupProductsByDate() {
+    Map<String, List<Product>> groupedProducts = {};
 
     for (var product in filteredProducts) {
-      DateTime dateKey = DateTime(product.createDate.year,
-          product.createDate.month, product.createDate.day);
-      if (!groupedProducts.containsKey(dateKey)) {
-        groupedProducts[dateKey] = [];
+      try {
+        DateTime dateTime = DateFormat('dd/MM/yyyy').parse(product.createDate);
+
+        String dateKey = "${dateTime.year}-${dateTime.month}-${dateTime.day}";
+        if (!groupedProducts.containsKey(dateKey)) {
+          groupedProducts[dateKey] = [];
+        }
+        groupedProducts[dateKey]!.add(product);
+      } catch (e) {
+        print('Error parsing date: $e');
       }
-      groupedProducts[dateKey]!.add(product);
     }
 
     return groupedProducts;
-  }
-
-  Future<dynamic> showDialogSlide(
-      BuildContext context, String title, String content) {
-    return showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(title),
-          content: Text(content),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Get.back();
-              },
-              child: Text("yes".tr()),
-            ),
-            TextButton(
-              onPressed: () {
-                Get.back();
-              },
-              child: Text("no".tr()),
-            ),
-          ],
-        );
-      },
-    );
   }
 }

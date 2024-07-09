@@ -6,6 +6,7 @@ class CustomButtonWidget extends StatelessWidget {
     super.key,
     this.onpressed,
     required this.btnText,
+    required Function() onPressed,
   });
 
   final String btnText;
