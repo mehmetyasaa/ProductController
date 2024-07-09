@@ -29,6 +29,8 @@ class CustomBottomSheetWidget extends StatelessWidget {
     final double deviceWidth = mediaQueryData.size.width;
     const List<String> list = <String>['Kg', 'G', 'L', 'Ml'];
 
+    // final dateFormat = DateTime.parse(createDate.text);
+
     return Wrap(
       children: [
         Column(
@@ -133,19 +135,15 @@ class CustomBottomSheetWidget extends StatelessWidget {
               child: CustomButtonWidget(
                 btnText: "save".tr(),
                 onPressed: () {
-                  // Validate and save the product
                   if (name.text.isEmpty ||
                       description.text.isEmpty ||
                       count.text.isEmpty ||
                       createDate.text.isEmpty) {
-                    // Handle validation
                     return;
                   }
 
-                  // Convert count.text to int safely
                   int countValue = int.tryParse(count.text) ?? 0;
 
-                  // Call ProductService to create the product
                   ProductsService().create(
                       name.text,
                       description.text,
@@ -153,6 +151,8 @@ class CustomBottomSheetWidget extends StatelessWidget {
                           .text), // Use DateTime.parse for string date
                       countValue,
                       dropdownValue);
+
+                  //2024-07-09T00:00:00.000
 
                   // Optionally, you can close the bottom sheet here
                   Navigator.of(context).pop();

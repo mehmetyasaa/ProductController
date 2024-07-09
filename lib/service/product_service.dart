@@ -10,12 +10,13 @@ class ProductsService {
     final int count,
     final String unit,
   ) async {
+    String formattedCreateDate =
+        "${createDate.day}/${createDate.month}/${createDate.year}";
     try {
       await _firestore.collection('products').add({
         'name': name,
         'description': description,
-        'createDate':
-            createDate.toIso8601String(), // Convert DateTime to String
+        'createDate': formattedCreateDate, // Convert DateTime to String
         'count': count,
         'unit': unit,
         'createdAt': FieldValue.serverTimestamp(),
