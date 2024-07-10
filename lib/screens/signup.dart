@@ -59,8 +59,8 @@ class SignupPage extends StatelessWidget {
             ),
             CustomButtonWidget(
               btnText: "signup".tr(),
-              onpressed: () {
-                Auth().createUserWithEmailAndPassword(
+              onpressed: () async {
+                await Auth().createUserWithEmailAndPassword(
                     email: email.text,
                     password: password.text,
                     displayName: name.text,

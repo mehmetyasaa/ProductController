@@ -25,12 +25,12 @@ class HomePage extends StatelessWidget {
   //drawer
   String? username = Auth().currentUser?.displayName;
   String? email = Auth().currentUser!.email;
+  // String? email = Auth().currentUser!.email;
 
   @override
   Widget build(BuildContext context) {
     double deviceHeight = MediaQuery.of(context).size.height;
-    double topPadding =
-        deviceHeight * 0.07; // Örneğin, yüksekliğin %10'u için bir değer
+    double topPadding = deviceHeight * 0.07;
 
     return Scaffold(
       drawer: Drawer(
@@ -67,11 +67,10 @@ class HomePage extends StatelessWidget {
                   ],
                 ),
               ),
-              ListTile(
-                leading: Icon(Icons.exit_to_app),
-                title: Text("Çıkış Yap"),
-                onTap: () => signOut(),
-              ),
+              drawerMethod(Icon(Icons.exit_to_app), Text("Çıkış Yap"),
+                  () => Auth().signOute()),
+              drawerMethod(Icon(Icons.delete), Text("Hesabı Sil"),
+                  () => Auth().deleteAccount()),
             ]),
           ),
         ),
@@ -173,9 +172,12 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Future<void> signOut() async {
-    await Auth().signOut();
-    Get.toNamed(RoutesClass.login);
+  ListTile drawerMethod(Widget leading, Widget title, Function()? onTap) {
+    return ListTile(
+      leading: leading,
+      title: title,
+      onTap: onTap,
+    );
   }
 
   DateTime parseDate(String dateString) {

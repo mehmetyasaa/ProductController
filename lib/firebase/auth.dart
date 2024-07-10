@@ -5,6 +5,7 @@ import 'package:imtapp/routes/routes.dart';
 
 class Auth {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   User? get currentUser => _firebaseAuth.currentUser;
 
@@ -34,9 +35,29 @@ class Auth {
     }
   }
 
-  Future<void> signOut() async {
+  Future<void> signOute() async {
     await _firebaseAuth.signOut();
+
     Get.toNamed(RoutesClass.login);
+  }
+
+  Future<void> deleteAccount() async {
+    var user = Auth().currentUser;
+    try {
+      if (user != null) {
+        await _firestore.collection('users').doc(user?.uid).delete();
+      } else {
+        print('Document ID not found for product');
+      }
+    } catch (e) {
+      print('Error deleting product: $e');
+    }
+    try {
+      await user?.delete();
+      Get.toNamed(RoutesClass.login);
+    } catch (e) {
+      return print('Error parsing date: $e');
+    }
   }
 
   Future<void> _addUserToFirestore(

@@ -19,10 +19,8 @@ class HomeController extends GetxController {
     try {
       String? docId = productDocumentIds[product];
       if (docId != null) {
-        // Remove from Firestore
         await _firestore.collection('products').doc(docId).delete();
 
-        // Remove from local list
         productList.remove(product);
         filterSearchResult('');
       } else {
@@ -58,6 +56,7 @@ class HomeController extends GetxController {
 
   void addProduct(Product product) {
     productList.add(product);
+
     filterSearchResult('');
   }
 
@@ -73,6 +72,7 @@ class HomeController extends GetxController {
     } else {
       filteredProducts.value = productList;
     }
+    fetchProducts();
   }
 
   Map<String, List<Product>> groupProductsByDate() {
