@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:imtapp/firebase/auth.dart';
-import 'package:imtapp/routes/routes.dart';
 import 'package:intl/intl.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:imtapp/controllers/home_controller.dart';
@@ -21,11 +20,10 @@ class HomePage extends StatelessWidget {
   final HomeController controller = Get.put(HomeController());
 
   String dropdownValue = 'Kg';
-
+  final PageController controllerr = PageController(initialPage: 0);
   //drawer
   String? username = Auth().currentUser?.displayName;
   String? email = Auth().currentUser!.email;
-  // String? email = Auth().currentUser!.email;
 
   @override
   Widget build(BuildContext context) {
@@ -35,79 +33,90 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       drawer: Drawer(
         child: SingleChildScrollView(
-          child: Container(
-            child: Column(children: [
-              Container(
-                color: const Color.fromARGB(255, 255, 136, 0),
-                width: double.infinity,
-                padding: EdgeInsets.only(top: topPadding),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.only(bottom: 10),
-                      height: deviceHeight * 0.12,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        image: DecorationImage(
-                            image: AssetImage('assets/image/profile.png')),
-                      ),
+          child: Column(children: [
+            Container(
+              color: const Color.fromARGB(255, 255, 136, 0),
+              width: double.infinity,
+              padding: EdgeInsets.only(top: topPadding),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 10),
+                    height: deviceHeight * 0.12,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                          image: AssetImage('assets/image/profile.png')),
                     ),
-                    Text(
-                      username ?? "undefined",
-                      style: TextStyle(color: Colors.white, fontSize: 22),
+                  ),
+                  Text(
+                    username ?? "undefined",
+                    style: const TextStyle(color: Colors.white, fontSize: 22),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 15),
+                    child: Text(
+                      email ?? "undefined",
+                      style: TextStyle(color: Colors.grey[200], fontSize: 16),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 15),
-                      child: Text(
-                        email ?? "undefined",
-                        style: TextStyle(color: Colors.grey[200], fontSize: 16),
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-              drawerMethod(Icon(Icons.exit_to_app), Text("Çıkış Yap"),
-                  () => Auth().signOute()),
-              drawerMethod(Icon(Icons.delete), Text("Hesabı Sil"),
-                  () => Auth().deleteAccount()),
-            ]),
-          ),
+            ),
+            drawerMethod(const Icon(Icons.exit_to_app), const Text("Çıkış Yap"),
+                () => Auth().signOute()),
+            drawerMethod(const Icon(Icons.delete), const Text("Hesabı Sil"),
+                () => Auth().deleteAccount()),
+          ]),
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: const Color.fromARGB(255, 253, 91, 22),
+        backgroundColor: const Color.fromARGB(255, 249, 109, 49),
         onPressed: () {
           showModalBottomSheet(
+            isScrollControlled: true,
             context: context,
-            builder: (context) {
-              return CustomBottomSheetWidget(
-                name: name,
-                description: description,
-                createDate: createDate,
-                count: count,
-                dropdownValue: dropdownValue,
-                onDropdownChanged: (String? newValue) {
-                  if (newValue != null) {
-                    dropdownValue = newValue;
-                  }
-                },
-              );
-            },
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
-            ),
             backgroundColor: Colors.white,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadiusDirectional.only(
+                topEnd: Radius.circular(25),
+                topStart: Radius.circular(25),
+              ),
+            ),
+            builder: (context) => Container(
+                padding: const EdgeInsetsDirectional.only(
+                  start: 20,
+                  end: 20,
+                  bottom: 20,
+                  top: 8,
+                ),
+                child: CustomBottomSheetWidget(
+                  name: name,
+                  description: description,
+                  createDate: createDate,
+                  count: count,
+                  dropdownValue: dropdownValue,
+                  onDropdownChanged: (String? newValue) {
+                    if (newValue != null) {
+                      dropdownValue = newValue;
+                    }
+                  },
+                )),
           );
         },
         child: const Icon(
           Icons.add,
-          size: 27,
+          size: 30,
+          color: Colors.white,
         ),
       ),
       body: Obx(() {
         if (controller.productList.isEmpty) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(
+              child: CircularProgressIndicator(
+            color: Colors.orange,
+          ));
         } else {
           final Map<String, List<Product>> groupedProducts =
               controller.groupProductsByDate();

@@ -31,139 +31,145 @@ class CustomBottomSheetWidget extends StatelessWidget {
     final double deviceWidth = mediaQueryData.size.width;
     const List<String> list = <String>['Kg', 'G', 'L', 'Ml'];
 
-    return Wrap(
-      children: [
-        Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              "Add Product".tr(),
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-            CustomFormWidget(
-              controller: name,
-              labelText: "name".tr(),
-              icon: const Icon(Icons.tag),
-            ),
-            CustomFormWidget(
-              controller: description,
-              labelText: "description".tr(),
-              icon: const Icon(Icons.description),
-            ),
-            Padding(
-              padding: EdgeInsets.all(deviceWidth / 60),
-              child: TextFormField(
-                onTap: () async {
-                  DateTime? picked = await showBoardDateTimePicker(
-                    context: context,
-                    initialDate: DateTime.now(),
-                    pickerType: DateTimePickerType.datetime,
-                    options: BoardDateTimeOptions(
-                      languages: BoardPickerLanguages(
-                        locale: 'en'.tr(),
-                        today: 'today'.tr(),
-                        tomorrow: 'tomorrow'.tr(),
-                        now: 'now'.tr(),
+    return SingleChildScrollView(
+      child: Wrap(
+        children: [
+          Column(
+            // mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Text(
+                  "Add Product".tr(),
+                  style: TextStyle(fontWeight: FontWeight.w500, fontSize: 24),
+                ),
+              ),
+              CustomFormWidget(
+                controller: name,
+                labelText: "name".tr(),
+                icon: const Icon(Icons.tag),
+              ),
+              CustomFormWidget(
+                controller: description,
+                labelText: "description".tr(),
+                icon: const Icon(Icons.description),
+              ),
+              Padding(
+                padding: EdgeInsets.all(deviceWidth / 60),
+                child: TextFormField(
+                  onTap: () async {
+                    DateTime? picked = await showBoardDateTimePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      pickerType: DateTimePickerType.datetime,
+                      options: BoardDateTimeOptions(
+                        languages: BoardPickerLanguages(
+                          locale: 'en'.tr(),
+                          today: 'today'.tr(),
+                          tomorrow: 'tomorrow'.tr(),
+                          now: 'now'.tr(),
+                        ),
+                        startDayOfWeek: DateTime.sunday,
+                        pickerFormat: PickerFormat.ymd,
+                        activeColor: const Color.fromARGB(255, 255, 147, 6),
+                        backgroundDecoration:
+                            const BoxDecoration(color: Colors.white),
                       ),
-                      startDayOfWeek: DateTime.sunday,
-                      pickerFormat: PickerFormat.ymd,
-                      activeColor: const Color.fromARGB(255, 255, 147, 6),
-                      backgroundDecoration:
-                          const BoxDecoration(color: Colors.white),
-                    ),
-                  );
-
-                  if (picked != null) {
-                    createDate.text = "${picked.toLocal()}".split(' ')[0];
-                  }
-                },
-                controller: createDate,
-                decoration: InputDecoration(
-                  labelText: "date".tr(),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(22),
-                  ),
-                  prefixIcon: const Icon(Icons.date_range),
-                ),
-                readOnly: true,
-              ),
-            ),
-            CustomFormWidget(
-              controller: count,
-              labelText: "quantity".tr(),
-              icon: const Icon(Icons.format_list_numbered),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(22.0),
-                  border: Border.all(
-                    color: Colors.black,
-                    style: BorderStyle.solid,
-                    width: 0.50,
-                  ),
-                ),
-                child: DropdownButtonFormField<String>(
-                  decoration: InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide.none,
-                      borderRadius: BorderRadius.circular(15.0),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide.none,
-                      borderRadius: BorderRadius.circular(15.0),
-                    ),
-                  ),
-                  value: dropdownValue,
-                  icon: const Icon(Icons.arrow_downward),
-                  elevation: 16,
-                  style: const TextStyle(color: Colors.black),
-                  onChanged: onDropdownChanged,
-                  items: list.map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
                     );
-                  }).toList(),
+
+                    if (picked != null) {
+                      createDate.text = "${picked.toLocal()}".split(' ')[0];
+                    }
+                  },
+                  controller: createDate,
+                  decoration: InputDecoration(
+                    labelText: "date".tr(),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(22),
+                    ),
+                    prefixIcon: const Icon(Icons.date_range),
+                  ),
+                  readOnly: true,
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 35),
-              child: CustomButtonWidget(
-                btnText: "save".tr(),
-                onPressed: () async {
-                  if (name.text.isEmpty ||
-                      description.text.isEmpty ||
-                      count.text.isEmpty ||
-                      createDate.text.isEmpty) {
-                    return;
-                  }
-
-                  int countValue = int.tryParse(count.text) ?? 0;
-
-                  Product newProduct = await ProductsService().create(
-                    name.text,
-                    description.text,
-                    DateTime.parse(createDate.text),
-                    countValue,
-                    dropdownValue,
-                  );
-                  name.text = "";
-                  description.text = "";
-                  createDate.text = "";
-                  count.text = "";
-
-                  Get.find<HomeController>().addProduct(newProduct);
-                  Get.back();
-                },
+              CustomFormWidget(
+                controller: count,
+                labelText: "quantity".tr(),
+                icon: const Icon(Icons.format_list_numbered),
               ),
-            ),
-          ],
-        ),
-      ],
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(22.0),
+                    border: Border.all(
+                      color: Colors.black,
+                      style: BorderStyle.solid,
+                      width: 0.50,
+                    ),
+                  ),
+                  child: DropdownButtonFormField<String>(
+                    decoration: InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(15.0),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(15.0),
+                      ),
+                    ),
+                    value: dropdownValue,
+                    icon: const Icon(Icons.arrow_downward),
+                    elevation: 16,
+                    style: const TextStyle(color: Colors.black),
+                    onChanged: onDropdownChanged,
+                    items: list.map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 20),
+                child: CustomButtonWidget(
+                  btnText: "save".tr(),
+                  onPressed: () async {
+                    if (name.text.isEmpty ||
+                        description.text.isEmpty ||
+                        count.text.isEmpty ||
+                        createDate.text.isEmpty) {
+                      return;
+                    }
+
+                    int countValue = int.tryParse(count.text) ?? 0;
+
+                    Product newProduct = await ProductsService().create(
+                      name.text,
+                      description.text,
+                      DateTime.parse(createDate.text),
+                      countValue,
+                      dropdownValue,
+                    );
+                    name.text = "";
+                    description.text = "";
+                    createDate.text = "";
+                    count.text = "";
+
+                    Get.find<HomeController>().addProduct(newProduct);
+                    Get.back();
+                  },
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
@@ -181,12 +187,18 @@ class CustomButtonWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
+      style: const ButtonStyle(
+          backgroundColor:
+              WidgetStatePropertyAll(Color.fromARGB(255, 255, 119, 0))),
       onPressed: onPressed,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 110),
         child: Text(
           btnText,
-          style: Theme.of(context).textTheme.bodyMedium,
+          style: Theme.of(context)
+              .textTheme
+              .titleLarge
+              ?.copyWith(fontWeight: FontWeight.w500, color: Colors.white),
         ),
       ),
     );
