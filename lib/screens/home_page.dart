@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:imtapp/firebase/auth.dart';
+import 'package:imtapp/routes/routes.dart';
 import 'package:intl/intl.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:imtapp/controllers/home_controller.dart';
@@ -20,9 +22,60 @@ class HomePage extends StatelessWidget {
 
   String dropdownValue = 'Kg';
 
+  //drawer
+  String? username = Auth().currentUser?.displayName;
+  String? email = Auth().currentUser!.email;
+
   @override
   Widget build(BuildContext context) {
+    double deviceHeight = MediaQuery.of(context).size.height;
+    double topPadding =
+        deviceHeight * 0.07; // Örneğin, yüksekliğin %10'u için bir değer
+
     return Scaffold(
+      drawer: Drawer(
+        child: SingleChildScrollView(
+          child: Container(
+            child: Column(children: [
+              Container(
+                color: const Color.fromARGB(255, 255, 136, 0),
+                width: double.infinity,
+                padding: EdgeInsets.only(top: topPadding),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 10),
+                      height: deviceHeight * 0.12,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                            image: AssetImage('assets/image/profile.png')),
+                      ),
+                    ),
+                    Text(
+                      username ?? "undefined",
+                      style: TextStyle(color: Colors.white, fontSize: 22),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 15),
+                      child: Text(
+                        email ?? "undefined",
+                        style: TextStyle(color: Colors.grey[200], fontSize: 16),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              ListTile(
+                leading: Icon(Icons.exit_to_app),
+                title: Text("Çıkış Yap"),
+                onTap: () => signOut(),
+              ),
+            ]),
+          ),
+        ),
+      ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: const Color.fromARGB(255, 253, 91, 22),
         onPressed: () {
@@ -118,6 +171,11 @@ class HomePage extends StatelessWidget {
         }
       }),
     );
+  }
+
+  Future<void> signOut() async {
+    await Auth().signOut();
+    Get.toNamed(RoutesClass.login);
   }
 
   DateTime parseDate(String dateString) {

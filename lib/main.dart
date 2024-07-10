@@ -1,8 +1,10 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:imtapp/firebase/auth.dart';
 import 'package:imtapp/lang/constants.dart';
 import 'package:imtapp/routes/routes.dart';
 
@@ -45,7 +47,9 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
-      initialRoute: RoutesClass.getHomeRoute(),
+      initialRoute: Auth().currentUser == null
+          ? RoutesClass.getLoginRoute()
+          : RoutesClass.getHomeRoute(),
       getPages: RoutesClass.routes,
     );
   }
