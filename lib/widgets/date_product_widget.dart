@@ -30,7 +30,9 @@ class DateProductWidget extends StatelessWidget {
         children: [
           SizedBox(
             width: 60,
+            height: 100,
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
                   isToday ? "today".tr() : DateFormat('MMM').format(date),
@@ -67,8 +69,32 @@ class DateProductWidget extends StatelessWidget {
                         backgroundColor: Colors.red,
                         icon: Icons.delete,
                         label: "delete".tr(),
-                        onPressed: (context) =>
-                            onDismissed(product, Actions.delete),
+                        onPressed: (context) {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text('delete'.tr()),
+                                content: Text(
+                                    'Are you sure you want to delete the product?'
+                                        .tr()),
+                                actions: <Widget>[
+                                  TextButton(
+                                    onPressed: () => Get.back(),
+                                    child: Text('no'.tr()),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      onDismissed(product, Actions.delete);
+                                      Get.back();
+                                    },
+                                    child: Text('yes'.tr()),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
                       ),
                     ],
                   ),

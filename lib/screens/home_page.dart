@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' hide Trans;
 import 'package:imtapp/firebase/auth.dart';
 import 'package:intl/intl.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -66,8 +66,35 @@ class HomePage extends StatelessWidget {
             ),
             drawerMethod(const Icon(Icons.exit_to_app), const Text("Çıkış Yap"),
                 () => Auth().signOute()),
-            drawerMethod(const Icon(Icons.delete), const Text("Hesabı Sil"),
-                () => Auth().deleteAccount()),
+            drawerMethod(
+              const Icon(Icons.delete),
+              const Text("Hesabı Sil"),
+              () {
+                showDialog(
+                  context: Get.context!,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text('Hesabı Sil'.tr()),
+                      content:
+                          Text('Hesabı silmek istediğinize emin misiniz?'.tr()),
+                      actions: <Widget>[
+                        TextButton(
+                          onPressed: () => Get.back(),
+                          child: Text('no'.tr()),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Auth().signOute();
+                            Get.back();
+                          },
+                          child: Text('yes'.tr()),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+            ),
           ]),
         ),
       ),
