@@ -35,15 +35,29 @@ class HomeController extends GetxController {
 
   void deleteProduct(Product product) async {
     try {
-      String? docId = productDocumentIds[product];
-      if (docId != null) {
-        await _firestore.collection('products').doc(docId).delete();
-
-        productList.remove(product);
-        filterSearchResult('');
-      } else {
-        print('Document ID not found for product');
+      User? currentUser = Auth().currentUser;
+      if (currentUser == null) {
+        print('No user is currently signed in');
+        return;
       }
+      String uid = currentUser.uid;
+
+      DocumentReference userDocRef = _firestore.collection('users').doc(uid);
+      DocumentSnapshot userDoc = await userDocRef.get();
+
+      List<dynamic> userProducts =
+          (userDoc.data() as Map<String, dynamic>)['products'];
+      userProducts.removeWhere((prod) =>
+          prod['name'] == product.name &&
+          prod['description'] == product.description &&
+          prod['createDate'] == product.createDate &&
+          prod['count'] == product.count &&
+          prod['unit'] == product.unit);
+
+      await userDocRef.update({'products': userProducts});
+
+      productList.remove(product);
+      filterSearchResult('');
     } catch (e) {
       print('Error deleting product: $e');
     }
@@ -88,6 +102,50 @@ class HomeController extends GetxController {
       filteredProducts.value = products;
     } catch (e) {
       print('Error getting products: $e');
+    }
+    filterSearchResult('');
+  }
+
+  Future<void> create(
+    final String userId,
+    final String name,
+    final String description,
+    final DateTime createDate,
+    final int count,
+    final String unit,
+  ) async {
+    String formattedCreateDate =
+        "${createDate.day}/${createDate.month}/${createDate.year}";
+    try {
+      final newProduct = {
+        "name": name,
+        "description": description,
+        "count": count,
+        "createDate": formattedCreateDate,
+        "unit": unit,
+      };
+
+      DocumentSnapshot<Map<String, dynamic>> userDoc =
+          await _firestore.collection("users").doc(userId).get();
+
+      if (userDoc.exists) {
+        List<dynamic>? currentProducts =
+            userDoc.data()?["products"] as List<dynamic>?;
+        if (currentProducts == null) {
+          currentProducts = [];
+        }
+
+        currentProducts.add(newProduct);
+
+        await _firestore
+            .collection("users")
+            .doc(userId)
+            .update({"products": currentProducts});
+      } else {
+        print('Document does not exist');
+      }
+    } catch (e) {
+      print("Error creating product: $e");
     }
     filterSearchResult('');
   }

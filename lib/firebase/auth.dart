@@ -44,7 +44,7 @@ class Auth {
     var user = Auth().currentUser;
     try {
       if (user != null) {
-        await _firestore.collection('users').doc(user?.uid).delete();
+        await _firestore.collection('users').doc(user.uid).delete();
       } else {
         print('Document ID not found for product');
       }

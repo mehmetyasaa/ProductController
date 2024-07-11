@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart' hide Trans;
-import 'package:intl/intl.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:imtapp/controllers/home_controller.dart';
 import 'package:imtapp/models/product_model.dart';
@@ -27,7 +26,7 @@ class DateProductWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 6),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start, //tarihi ortalama
         children: [
           SizedBox(
             width: 60,
@@ -42,7 +41,7 @@ class DateProductWidget extends StatelessWidget {
                 ),
                 if (!isToday)
                   Text(
-                    DateFormat('d').format(date), // Day
+                    DateFormat('d').format(date),
                     style: const TextStyle(
                         fontSize: 40,
                         fontWeight: FontWeight.w700,

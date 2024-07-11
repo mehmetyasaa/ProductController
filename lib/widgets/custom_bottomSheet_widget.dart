@@ -1,11 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:board_datetime_picker/board_datetime_picker.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:get/get.dart' hide Trans;
 import 'package:imtapp/firebase/auth.dart';
-import 'package:imtapp/models/product_model.dart';
-import 'package:imtapp/service/product_service.dart';
 import 'package:imtapp/widgets/custom_form_widget.dart';
 import 'package:imtapp/controllers/home_controller.dart';
 
@@ -18,34 +15,33 @@ class CustomBottomSheetWidget extends StatelessWidget {
   final void Function(String?) onDropdownChanged;
 
   const CustomBottomSheetWidget({
-    Key? key,
+    super.key,
     required this.name,
     required this.description,
     required this.createDate,
     required this.count,
     required this.dropdownValue,
     required this.onDropdownChanged,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     final MediaQueryData mediaQueryData = MediaQuery.of(context);
     final double deviceWidth = mediaQueryData.size.width;
     const List<String> list = <String>['Kg', 'G', 'L', 'Ml'];
-    final FirebaseFirestore db = FirebaseFirestore.instance;
 
     return SingleChildScrollView(
       child: Wrap(
         children: [
           Column(
-            // mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
               Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Text(
                   "Add Product".tr(),
-                  style: TextStyle(fontWeight: FontWeight.w500, fontSize: 24),
+                  style: const TextStyle(
+                      fontWeight: FontWeight.w500, fontSize: 24),
                 ),
               ),
               CustomFormWidget(
@@ -150,7 +146,7 @@ class CustomBottomSheetWidget extends StatelessWidget {
                       return;
                     }
 
-                    ProductsService().create(
+                    Get.find<HomeController>().create(
                         Auth().currentUser!.uid,
                         name.text,
                         description.text,
@@ -189,7 +185,8 @@ class CustomButtonWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      style: ElevatedButton.styleFrom(),
+      style: ElevatedButton.styleFrom(
+          backgroundColor: const Color.fromARGB(255, 255, 147, 6)),
       onPressed: onPressed,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 110),
