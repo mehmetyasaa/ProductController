@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:imtapp/firebase/auth.dart';
 import 'package:imtapp/models/product_model.dart';
 
 class ProductsService {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseFirestore _db = FirebaseFirestore.instance;
 
-  Future<Product> create(
+  Future<void> create(
+    final String userId,
     final String name,
     final String description,
     final DateTime createDate,
@@ -14,26 +16,35 @@ class ProductsService {
     String formattedCreateDate =
         "${createDate.day}/${createDate.month}/${createDate.year}";
     try {
-      DocumentReference docRef = await _firestore.collection('products').add({
-        'name': name,
-        'description': description,
-        'createDate': formattedCreateDate,
-        'count': count,
-        'unit': unit,
-        'createdAt': FieldValue.serverTimestamp(),
-      });
+      final newProduct = {
+        "name": name,
+        "description": description,
+        "count": count,
+        "createDate": formattedCreateDate,
+        "unit": unit,
+      };
 
-      DocumentSnapshot doc = await docRef.get();
-      return Product(
-        name: name,
-        description: description,
-        createDate: formattedCreateDate,
-        count: count,
-        unit: unit,
-      );
+      DocumentSnapshot<Map<String, dynamic>> userDoc =
+          await _db.collection("users").doc(userId).get();
+
+      if (userDoc.exists) {
+        List<dynamic>? currentProducts =
+            userDoc.data()?["products"] as List<dynamic>?;
+        if (currentProducts == null) {
+          currentProducts = [];
+        }
+
+        currentProducts.add(newProduct);
+
+        await _db
+            .collection("users")
+            .doc(userId)
+            .update({"products": currentProducts});
+      } else {
+        print('Document does not exist');
+      }
     } catch (e) {
-      print('Error creating product: $e');
-      throw e;
+      print("Error creating product: $e");
     }
   }
 }

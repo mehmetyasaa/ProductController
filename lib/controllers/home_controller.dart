@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
+import 'package:imtapp/firebase/auth.dart';
 import 'package:imtapp/models/product_model.dart';
 import 'package:intl/intl.dart';
 
@@ -8,6 +10,22 @@ class HomeController extends GetxController {
   RxList<Product> filteredProducts = RxList<Product>([]);
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final Map<Product, String> productDocumentIds = {};
+
+  HomeController() {
+    Auth().authStateChanges.listen((User? user) {
+      if (user == null) {
+        clearProducts();
+      } else {
+        fetchProducts();
+      }
+    });
+  }
+
+  void clearProducts() {
+    productList.clear();
+    filteredProducts.clear();
+    productDocumentIds.clear();
+  }
 
   @override
   void onInit() {
@@ -31,32 +49,51 @@ class HomeController extends GetxController {
     }
   }
 
-  void editProduct(Product product) {}
+  void editProduct(Product product) {
+    // Implement your edit logic here
+  }
 
   void fetchProducts() async {
     try {
-      QuerySnapshot snapshot = await _firestore.collection('products').get();
-      List<Product> products = snapshot.docs.map((doc) {
-        Product product = Product(
-          name: doc['name'],
-          description: doc['description'],
-          createDate: doc['createDate'],
-          count: doc['count'],
-          unit: doc['unit'],
-        );
-        productDocumentIds[product] = doc.id;
-        return product;
-      }).toList();
+      User? currentUser = Auth().currentUser;
+      if (currentUser == null) {
+        print('No user is currently signed in');
+        return;
+      }
+      String uid = currentUser.uid;
+
+      DocumentSnapshot userDoc =
+          await _firestore.collection('users').doc(uid).get();
+
+      List<Product> products = [];
+      Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;
+
+      if (userData.containsKey('products')) {
+        List<dynamic> userProducts = userData['products'];
+
+        for (var productData in userProducts) {
+          Product product = Product(
+            name: productData['name'],
+            description: productData['description'],
+            createDate: productData['createDate'],
+            count: productData['count'],
+            unit: productData['unit'],
+          );
+          productDocumentIds[product] = userDoc.id;
+          products.add(product);
+        }
+      }
+
       productList.value = products;
       filteredProducts.value = products;
     } catch (e) {
       print('Error getting products: $e');
     }
+    filterSearchResult('');
   }
 
   void addProduct(Product product) {
     productList.add(product);
-
     filterSearchResult('');
   }
 

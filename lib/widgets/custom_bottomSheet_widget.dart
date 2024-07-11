@@ -1,7 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:board_datetime_picker/board_datetime_picker.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:get/get.dart' hide Trans;
+import 'package:imtapp/firebase/auth.dart';
 import 'package:imtapp/models/product_model.dart';
 import 'package:imtapp/service/product_service.dart';
 import 'package:imtapp/widgets/custom_form_widget.dart';
@@ -30,6 +32,7 @@ class CustomBottomSheetWidget extends StatelessWidget {
     final MediaQueryData mediaQueryData = MediaQuery.of(context);
     final double deviceWidth = mediaQueryData.size.width;
     const List<String> list = <String>['Kg', 'G', 'L', 'Ml'];
+    final FirebaseFirestore db = FirebaseFirestore.instance;
 
     return SingleChildScrollView(
       child: Wrap(
@@ -147,21 +150,20 @@ class CustomBottomSheetWidget extends StatelessWidget {
                       return;
                     }
 
-                    int countValue = int.tryParse(count.text) ?? 0;
+                    ProductsService().create(
+                        Auth().currentUser!.uid,
+                        name.text,
+                        description.text,
+                        DateTime.parse(createDate.text),
+                        int.parse(count.text),
+                        dropdownValue);
 
-                    Product newProduct = await ProductsService().create(
-                      name.text,
-                      description.text,
-                      DateTime.parse(createDate.text),
-                      countValue,
-                      dropdownValue,
-                    );
                     name.text = "";
                     description.text = "";
                     createDate.text = "";
                     count.text = "";
 
-                    Get.find<HomeController>().addProduct(newProduct);
+                    Get.find<HomeController>().fetchProducts();
                     Get.back();
                   },
                 ),
@@ -187,9 +189,7 @@ class CustomButtonWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      style: const ButtonStyle(
-          backgroundColor:
-              WidgetStatePropertyAll(Color.fromARGB(255, 255, 119, 0))),
+      style: ElevatedButton.styleFrom(),
       onPressed: onPressed,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 110),

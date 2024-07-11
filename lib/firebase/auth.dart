@@ -37,7 +37,6 @@ class Auth {
 
   Future<void> signOute() async {
     await _firebaseAuth.signOut();
-
     Get.toNamed(RoutesClass.login);
   }
 
