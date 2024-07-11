@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:imtapp/firebase/auth.dart';
+import 'package:imtapp/firebase_options.dart';
 import 'package:imtapp/lang/constants.dart';
 import 'package:imtapp/routes/routes.dart';
 
@@ -18,7 +19,9 @@ void main() async {
   );
   FlutterNativeSplash.remove();
 
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(EasyLocalization(
     supportedLocales: const [
       LocaleConstants.trLocale,
