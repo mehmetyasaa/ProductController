@@ -61,6 +61,7 @@ class CustomBottomSheetWidget extends StatelessWidget {
             Padding(
               padding: EdgeInsets.all(deviceWidth / 60),
               child: TextFormField(
+                textInputAction: TextInputAction.next,
                 onTap: () async {
                   DateTime? picked = await showBoardDateTimePicker(
                     context: context,

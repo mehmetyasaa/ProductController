@@ -18,6 +18,7 @@ class CustomFormWidget extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.all(deviceWidth * .02),
       child: TextFormField(
+        textInputAction: TextInputAction.next,
         controller: controller,
         decoration: InputDecoration(
             labelText: labelText,

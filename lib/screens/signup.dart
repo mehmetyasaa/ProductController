@@ -110,11 +110,13 @@ class SignupPage extends StatelessWidget {
     );
   }
 
+//diğer textform ile birleştirilecek
   Padding customTextForm(
       TextEditingController? controller, String labelText, Widget icon) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: TextFormField(
+        textInputAction: TextInputAction.next,
         controller: controller,
         decoration: InputDecoration(
             labelText: labelText,
