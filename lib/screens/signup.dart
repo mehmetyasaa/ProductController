@@ -18,78 +18,93 @@ class SignupPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double deviceHeight = MediaQuery.of(context).size.height;
     const appName = "ImtApp";
     const animationSignupAsset = 'assets/lottie/AnimationSignup.json';
+
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(15.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Center(child: Lottie.asset(animationSignupAsset, height: 200)),
-            Text(
-              appName,
-              style: GoogleFonts.lato(
-                  textStyle: Theme.of(context).textTheme.displaySmall),
-            ),
-            const SizedBox(
-              height: 60,
-            ),
-            customTextForm(
-              name,
-              "name".tr(),
-              const Icon(Icons.account_box,
-                  color: Color.fromARGB(255, 99, 78, 145)),
-            ),
-            customTextForm(
-              email,
-              "email".tr(),
-              const Icon(Icons.email, color: Color.fromARGB(255, 99, 78, 145)),
-            ),
-            customTextForm(
-              phone,
-              "phone".tr(),
-              const Icon(Icons.phone, color: Color.fromARGB(255, 99, 78, 145)),
-            ),
-            customTextForm(
-              password,
-              "password".tr(),
-              const Icon(Icons.password,
-                  color: Color.fromARGB(255, 99, 78, 145)),
-            ),
-            CustomButtonWidget(
-              btnText: "signup".tr(),
-              onpressed: () async {
-                await Auth().createUserWithEmailAndPassword(
-                    email: email.text,
-                    password: password.text,
-                    displayName: name.text,
-                    phone: int.parse(phone.text));
-                Get.toNamed("/");
-              },
-              onPressed: () {},
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 5),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text("Already have an Account ?".tr()),
-                  TextButton(
-                    onPressed: () {
-                      Get.toNamed(RoutesClass.login);
-                    },
-                    child: Text(
-                      "login".tr(),
-                      style: const TextStyle(
-                        color: Colors.purple,
+      resizeToAvoidBottomInset: true,
+      body: SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
+        child: Padding(
+          padding: EdgeInsets.only(
+            left: deviceHeight * 0.01,
+            right: deviceHeight * 0.01,
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(height: deviceHeight * 0.08),
+              Center(
+                  child: Lottie.asset(animationSignupAsset,
+                      height: deviceHeight * 0.20)),
+              Text(
+                appName,
+                style: GoogleFonts.lato(
+                    textStyle: Theme.of(context).textTheme.displaySmall),
+              ),
+              SizedBox(
+                height: deviceHeight * 0.04,
+              ),
+              customTextForm(
+                name,
+                "name".tr(),
+                const Icon(Icons.account_box,
+                    color: Color.fromARGB(255, 99, 78, 145)),
+              ),
+              customTextForm(
+                email,
+                "email".tr(),
+                const Icon(Icons.email,
+                    color: Color.fromARGB(255, 99, 78, 145)),
+              ),
+              customTextForm(
+                phone,
+                "phone".tr(),
+                const Icon(Icons.phone,
+                    color: Color.fromARGB(255, 99, 78, 145)),
+              ),
+              customTextForm(
+                password,
+                "password".tr(),
+                const Icon(Icons.password,
+                    color: Color.fromARGB(255, 99, 78, 145)),
+              ),
+              CustomButtonWidget(
+                btnText: "signup".tr(),
+                onpressed: () async {
+                  await Auth().createUserWithEmailAndPassword(
+                      email: email.text,
+                      password: password.text,
+                      displayName: name.text,
+                      phone: int.parse(phone.text));
+                  Get.toNamed("/");
+                },
+                onPressed: () {},
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: deviceHeight * 0.01),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("Already have an Account ?".tr()),
+                    TextButton(
+                      onPressed: () {
+                        Get.toNamed(RoutesClass.login);
+                      },
+                      child: Text(
+                        "login".tr(),
+                        style: const TextStyle(
+                          color: Colors.purple,
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

@@ -57,6 +57,7 @@ class Auth {
     } catch (e) {
       return print('Error parsing date: $e');
     }
+    Get.toNamed(RoutesClass.login);
   }
 
   Future<void> _addUserToFirestore(

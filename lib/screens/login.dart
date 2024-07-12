@@ -4,7 +4,6 @@ import "package:flutter/material.dart";
 import 'package:get/get.dart'
     hide
         Trans; //getx ve easy local'de string.tr() kullanımı çakıştığından hide kullandım
-
 import 'package:google_fonts/google_fonts.dart';
 import 'package:imtapp/controllers/password_controller.dart';
 import 'package:imtapp/firebase/auth.dart';
@@ -39,79 +38,96 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double deviceHeight = MediaQuery.of(context).size.height;
     const appName = "ImtApp";
     const animationSignupAsset = 'assets/lottie/AnimationLogin.json';
     final isObscureController = Get.put(PasswordController());
 
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(15.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Center(child: Lottie.asset(animationSignupAsset, height: 250)),
-            Text(
-              appName,
-              style: GoogleFonts.lato(
-                  textStyle: Theme.of(context).textTheme.displaySmall),
-            ),
-            const SizedBox(
-              height: 60,
-            ),
-            CustomFormWidget(
+      resizeToAvoidBottomInset: true,
+      body: SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
+        child: Padding(
+          padding: EdgeInsets.only(
+            left: deviceHeight * 0.01,
+            right: deviceHeight * 0.01,
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(height: deviceHeight * 0.1),
+              Center(
+                child: Lottie.asset(animationSignupAsset,
+                    height: deviceHeight * 0.25),
+              ),
+              Text(
+                appName,
+                style: GoogleFonts.lato(
+                  textStyle: Theme.of(context).textTheme.displaySmall,
+                ),
+              ),
+              SizedBox(
+                height: deviceHeight * 0.08,
+              ),
+              CustomFormWidget(
                 controller: email,
                 labelText: "email".tr(),
                 icon: const Icon(Icons.email,
-                    color: Color.fromARGB(255, 99, 78, 145))),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Obx(() => TextFormField(
-                    obscureText: isObscureController.isObscure.value,
-                    controller: password,
-                    decoration: InputDecoration(
+                    color: Color.fromARGB(255, 99, 78, 145)),
+              ),
+              Padding(
+                padding: EdgeInsets.all(deviceHeight * 0.01),
+                child: Obx(() => TextFormField(
+                      obscureText: isObscureController.isObscure.value,
+                      controller: password,
+                      decoration: InputDecoration(
                         suffixIcon: IconButton(
-                            onPressed: () =>
-                                isObscureController.changeObscure(),
-                            icon: Icon(isObscureController.isObscure.value
+                          onPressed: () => isObscureController.changeObscure(),
+                          icon: Icon(
+                            isObscureController.isObscure.value
                                 ? Icons.visibility
-                                : Icons.visibility_off)),
+                                : Icons.visibility_off,
+                          ),
+                        ),
                         labelText: "password".tr(),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(22),
                         ),
                         prefixIcon: const Icon(Icons.password,
-                            color: Color.fromARGB(255, 99, 78, 145))),
-                  )),
-            ),
-            CustomButtonWidget(
-              btnText: "login".tr(),
-              onpressed: () async {
-                await signInWithEmailAndPassword(context);
-              },
-              onPressed: () {},
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 5),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // const LocaleText(text: LocaleKeys.splash_hello), //death code temizlenecek
-                  Text("Don't have an account?".tr()),
-                  TextButton(
-                    onPressed: () {
-                      Get.toNamed(RoutesClass.signup);
-                    },
-                    child: Text(
-                      "signup".tr(),
-                      style: const TextStyle(
-                        color: Colors.purple,
+                            color: Color.fromARGB(255, 99, 78, 145)),
+                      ),
+                    )),
+              ),
+              CustomButtonWidget(
+                btnText: "login".tr(),
+                onpressed: () async {
+                  await signInWithEmailAndPassword(context);
+                },
+                onPressed: () {},
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: deviceHeight * 0.01),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("Don't have an account?".tr()),
+                    TextButton(
+                      onPressed: () {
+                        Get.toNamed(RoutesClass.signup);
+                      },
+                      child: Text(
+                        "signup".tr(),
+                        style: const TextStyle(
+                          color: Colors.purple,
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

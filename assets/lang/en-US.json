@@ -26,5 +26,11 @@
     "en": "en",
     "The email address is badly formatted.": "The email address is badly formatted.",
     "The password is invalid or the user does not have a password.": "The password is invalid or the user does not have a password.",
-    "The supplied auth credential is malformed or has expired.": "The supplied auth credential is malformed or has expired."
+    "The supplied auth credential is malformed or has expired.": "The supplied auth credential is malformed or has expired.",
+    "Delete Account": "Delete Account",
+    "Are you sure you want to delete the account?": "Are you sure you want to delete the account?",
+    "Log Out": "Log Out",
+    "Product Not Found": "Product Not Found",
+    "Search": "Search",
+    "Write to search": "Write to search"
 }

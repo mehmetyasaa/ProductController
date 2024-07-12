@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide Trans;
 import 'package:imtapp/firebase/auth.dart';
-import 'package:intl/intl.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:imtapp/controllers/home_controller.dart';
 import 'package:imtapp/widgets/custom_bottomSheet_widget.dart';
@@ -31,6 +30,7 @@ class HomePage extends StatelessWidget {
     double topPadding = deviceHeight * 0.07;
 
     return Scaffold(
+      // resizeToAvoidBottomInset: true,
       drawer: Drawer(
         child: SingleChildScrollView(
           child: Column(children: [
@@ -42,7 +42,7 @@ class HomePage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
-                    margin: const EdgeInsets.only(bottom: 10),
+                    margin: EdgeInsets.only(bottom: deviceHeight * 0.02),
                     height: deviceHeight * 0.12,
                     decoration: const BoxDecoration(
                       shape: BoxShape.circle,
@@ -55,7 +55,7 @@ class HomePage extends StatelessWidget {
                     style: const TextStyle(color: Colors.white, fontSize: 22),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(bottom: 15),
+                    padding: EdgeInsets.only(bottom: deviceHeight * 0.02),
                     child: Text(
                       email ?? "undefined",
                       style: TextStyle(color: Colors.grey[200], fontSize: 16),
@@ -64,17 +64,17 @@ class HomePage extends StatelessWidget {
                 ],
               ),
             ),
-            drawerMethod(const Icon(Icons.exit_to_app), const Text("Çıkış Yap"),
+            drawerMethod(const Icon(Icons.exit_to_app), Text("Log Out".tr()),
                 () => Auth().signOute()),
             drawerMethod(
               const Icon(Icons.delete),
-              const Text("Hesabı Sil"),
+              Text("Delete Account".tr()),
               () {
                 showDialog(
                   context: Get.context!,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                      title: Text('Hesabı Sil'.tr()),
+                      title: Text("Delete Account".tr()),
                       content:
                           Text('Hesabı silmek istediğinize emin misiniz?'.tr()),
                       actions: <Widget>[
@@ -84,7 +84,7 @@ class HomePage extends StatelessWidget {
                         ),
                         TextButton(
                           onPressed: () {
-                            Auth().signOute();
+                            Auth().deleteAccount();
                             Get.back();
                           },
                           child: Text('yes'.tr()),
@@ -140,10 +140,12 @@ class HomePage extends StatelessWidget {
       ),
       body: Obx(() {
         if (controller.productList.isEmpty) {
-          return const Center(
-              child: CircularProgressIndicator(
-            color: Colors.orange,
-          ));
+          return Center(
+              child: Text("Product Not Found".tr(),
+                  style: const TextStyle(
+                      color: Colors.orange,
+                      fontSize: 22,
+                      fontWeight: FontWeight.w600)));
         } else {
           final Map<String, List<Product>> groupedProducts =
               controller.groupProductsByDate();
@@ -153,7 +155,7 @@ class HomePage extends StatelessWidget {
           return CustomScrollView(
             slivers: <Widget>[
               SliverAppBar(
-                expandedHeight: 60,
+                expandedHeight: deviceHeight * 0.08,
                 title: const Text("İletişim Yazılım"),
                 flexibleSpace: FlexibleSpaceBar(
                   background: ClipRRect(
@@ -169,18 +171,19 @@ class HomePage extends StatelessWidget {
               ),
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 20, right: 20, left: 20),
+                  padding: EdgeInsets.all(deviceHeight * 0.02),
                   child: TextField(
                     onChanged: (value) {
                       controller.filterSearchResult(value);
                     },
                     controller: search,
-                    decoration: const InputDecoration(
-                      labelText: "Listeyi ara",
-                      hintText: "Aramak için yaz",
-                      prefixIcon: Icon(Icons.search),
+                    decoration: InputDecoration(
+                      labelText: "Search".tr(),
+                      hintText: "Write to search".tr(),
+                      prefixIcon: const Icon(Icons.search),
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        borderRadius: BorderRadius.all(
+                            Radius.circular(deviceHeight * 0.02)),
                       ),
                     ),
                   ),

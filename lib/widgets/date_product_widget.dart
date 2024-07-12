@@ -10,123 +10,145 @@ enum Actions { delete, edit }
 class DateProductWidget extends StatelessWidget {
   final DateTime date;
   final List<Product> products;
+  final String formattedDate;
 
-  const DateProductWidget(
-      {super.key,
-      required this.date,
-      required this.products,
-      required String formattedDate});
+  const DateProductWidget({
+    super.key,
+    required this.date,
+    required this.products,
+    required this.formattedDate,
+  });
 
   @override
   Widget build(BuildContext context) {
+    double deviceHeight = MediaQuery.of(context).size.height;
     bool isToday = DateTime.now().year == date.year &&
         DateTime.now().month == date.month &&
         DateTime.now().day == date.day;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 6),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start, //tarihi ortalama
-        children: [
-          SizedBox(
-            width: 60,
-            height: 100,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  isToday ? "today".tr() : DateFormat('MMM').format(date),
-                  style: const TextStyle(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 15,
-                      color: Color.fromARGB(255, 255, 77, 0)),
-                ),
-                if (!isToday)
-                  Text(
-                    DateFormat('d').format(date),
-                    style: const TextStyle(
-                        fontSize: 40,
-                        fontWeight: FontWeight.w700,
-                        color: Color.fromARGB(255, 255, 77, 0)),
+      padding: EdgeInsets.symmetric(
+        vertical: deviceHeight * 0.006,
+        horizontal: deviceHeight * 0.0010,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: products.asMap().entries.map((entry) {
+          int index = entry.key;
+          Product product = entry.value;
+          bool isFirst = index == 0;
+
+          return Padding(
+            padding: EdgeInsets.only(bottom: deviceHeight * 0.015),
+            child: Slidable(
+              endActionPane: ActionPane(
+                motion: const StretchMotion(),
+                children: [
+                  SlidableAction(
+                    backgroundColor: Colors.green,
+                    icon: Icons.edit,
+                    label: "edit".tr(),
+                    onPressed: (context) => onDismissed(product, Actions.edit),
                   ),
-              ],
-            ),
-          ),
-          Expanded(
-            child: Column(
-              children: products.map((product) {
-                return Slidable(
-                  endActionPane: ActionPane(
-                    motion: const StretchMotion(),
-                    children: [
-                      SlidableAction(
-                          backgroundColor: Colors.green,
-                          icon: Icons.edit,
-                          label: "edit".tr(),
-                          onPressed: (context) =>
-                              onDismissed(product, Actions.edit)),
-                      SlidableAction(
-                        backgroundColor: Colors.red,
-                        icon: Icons.delete,
-                        label: "delete".tr(),
-                        onPressed: (context) {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: Text('delete'.tr()),
-                                content: Text(
-                                    'Are you sure you want to delete the product?'
-                                        .tr()),
-                                actions: <Widget>[
-                                  TextButton(
-                                    onPressed: () => Get.back(),
-                                    child: Text('no'.tr()),
-                                  ),
-                                  TextButton(
-                                    onPressed: () {
-                                      onDismissed(product, Actions.delete);
-                                      Get.back();
-                                    },
-                                    child: Text('yes'.tr()),
-                                  ),
-                                ],
-                              );
-                            },
+                  SlidableAction(
+                    backgroundColor: Colors.red,
+                    icon: Icons.delete,
+                    label: "delete".tr(),
+                    onPressed: (context) {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text('delete'.tr()),
+                            content: Text(
+                              'Are you sure you want to delete the product?'
+                                  .tr(),
+                            ),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () => Get.back(),
+                                child: Text('no'.tr()),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  onDismissed(product, Actions.delete);
+                                  Get.back();
+                                },
+                                child: Text('yes'.tr()),
+                              ),
+                            ],
                           );
                         },
-                      ),
-                    ],
+                      );
+                    },
                   ),
-                  child: ListTile(
-                    title: Padding(
-                      padding: const EdgeInsets.only(left: 50),
-                      child: Text(
-                        product.name,
-                        style: const TextStyle(
-                            fontWeight: FontWeight.w800, fontSize: 17),
-                      ),
+                ],
+              ),
+              child: ListTile(
+                leading: isFirst
+                    ? Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            isToday
+                                ? "today".tr()
+                                : DateFormat('MMM').format(date),
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w700,
+                              fontSize: 14,
+                              color: Color.fromARGB(255, 255, 77, 0),
+                            ),
+                          ),
+                          if (!isToday)
+                            Text(
+                              DateFormat('d').format(date),
+                              style: const TextStyle(
+                                fontSize: 25,
+                                fontWeight: FontWeight.w700,
+                                color: Color.fromARGB(255, 255, 77, 0),
+                              ),
+                            ),
+                        ],
+                      )
+                    : null,
+                title: Padding(
+                  padding:
+                      EdgeInsets.only(left: isFirst ? 0 : deviceHeight * 0.075),
+                  child: Text(
+                    product.name,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w800,
+                      fontSize: 17,
                     ),
-                    subtitle: Padding(
-                      padding: const EdgeInsets.only(left: 50),
-                      child: Text(
-                          "${"description".tr()} : ${product.description}"),
-                    ),
-                    trailing: Text(
+                  ),
+                ),
+                subtitle: Padding(
+                  padding:
+                      EdgeInsets.only(left: isFirst ? 0 : deviceHeight * 0.075),
+                  child: Text("${"description".tr()} : ${product.description}"),
+                ),
+                trailing: Column(
+                  children: [
+                    Text(
                       "${product.count}  ${"quantity".tr()}",
                       style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w700,
-                          color: Color.fromARGB(255, 255, 99, 9)),
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                        color: Color.fromARGB(255, 255, 99, 9),
+                      ),
                     ),
-                    contentPadding: const EdgeInsets.all(10),
-                    onTap: () {},
-                  ),
-                );
-              }).toList(),
+                    const Icon(
+                      Icons.swipe_left_outlined,
+                      color: Color.fromARGB(255, 190, 71, 2),
+                    ),
+                  ],
+                ),
+                contentPadding: EdgeInsets.all(deviceHeight * 0.015),
+                onTap: () {},
+              ),
             ),
-          ),
-        ],
+          );
+        }).toList(),
       ),
     );
   }

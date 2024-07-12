@@ -26,5 +26,11 @@
     "en": "tr",
     "The email address is badly formatted.": "E-posta adresi hatalı biçimlendirilmiş.",
     "The password is invalid or the user does not have a password.": "Parola geçersizdir veya kullanıcının parolası yoktur.",
-    "The supplied auth credential is malformed or has expired.": "Sağlanan kimlik doğrulama bilgisi hatalı biçimlendirilmiş veya süresi dolmuş."
+    "The supplied auth credential is malformed or has expired.": "Sağlanan kimlik doğrulama bilgisi hatalı biçimlendirilmiş veya süresi dolmuş.",
+    "Delete Account": "Hesabı Sil",
+    "Are you sure you want to delete the account?": "Hesabı silmek istediğinizden emin misiniz?",
+    "Log Out": "Çıkış Yap",
+    "Product Not Found": "Ürün Bulunamadı",
+    "Search": "Ara",
+    "Write to search": "Aramak için yaz"
 }

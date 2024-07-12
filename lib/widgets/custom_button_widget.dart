@@ -14,10 +14,12 @@ class CustomButtonWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double deviceHeight = MediaQuery.of(context).size.height;
     return FilledButton.tonal(
       onPressed: onpressed,
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 110),
+        padding: EdgeInsets.symmetric(
+            vertical: deviceHeight * 0.014, horizontal: deviceHeight * 0.13),
         child: Text(
           btnText,
           style: GoogleFonts.lato(
