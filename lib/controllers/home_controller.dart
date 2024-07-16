@@ -81,6 +81,7 @@ class HomeController extends GetxController {
 
       for (var productData in userProducts) {
         Product product = Product(
+          id: productData['id'],
           name: productData['name'],
           description: productData['description'],
           createDate: productData['createDate'],
@@ -107,12 +108,21 @@ class HomeController extends GetxController {
     String formattedCreateDate =
         "${createDate.day}/${createDate.month}/${createDate.year}";
 
+    String newProductId = _firestore
+        .collection("users")
+        .doc(userId)
+        .collection("products")
+        .doc()
+        .id;
+
     final newProduct = {
+      "id": newProductId, // Include the generated id
       "name": name,
       "description": description,
       "count": count,
       "createDate": formattedCreateDate,
       "unit": unit,
+      "status": true,
     };
 
     DocumentSnapshot<Map<String, dynamic>> userDoc =
@@ -131,6 +141,37 @@ class HomeController extends GetxController {
 
     filterSearchResult('');
     fetchProducts();
+  }
+
+  Future<void> updateStatus(Product product, bool status) async {
+    String? userId = Auth().currentUser?.uid;
+
+    if (userId == null) {
+      print("User not authenticated");
+      return;
+    }
+
+    try {
+      DocumentSnapshot<Map<String, dynamic>> userDoc =
+          await _firestore.collection("users").doc(userId).get();
+
+      List<dynamic>? currentProducts =
+          userDoc.data()?["products"] as List<dynamic>? ?? [];
+      int index = currentProducts.indexWhere((p) => p["id"] == product.id);
+
+      if (index != -1) {
+        currentProducts[index]["status"] = !currentProducts[index]["status"];
+
+        await _firestore
+            .collection("users")
+            .doc(userId)
+            .update({"products": currentProducts});
+      } else {
+        print("Product not found");
+      }
+    } catch (e) {
+      print("Error updating product status: $e");
+    }
   }
 
   void filterSearchResult(String query) {

@@ -4,8 +4,10 @@ import 'package:get/get.dart' hide Trans;
 import 'package:easy_localization/easy_localization.dart';
 import 'package:imtapp/controllers/home_controller.dart';
 import 'package:imtapp/models/product_model.dart';
+import 'package:imtapp/routes/routes.dart';
+import 'package:imtapp/screens/product_details_page.dart';
 
-enum Actions { delete, edit }
+enum Actions { delete, edit, passive }
 
 class DateProductWidget extends StatelessWidget {
   final DateTime date;
@@ -84,6 +86,18 @@ class DateProductWidget extends StatelessWidget {
                   ),
                 ],
               ),
+              startActionPane: ActionPane(
+                motion: const StretchMotion(),
+                children: [
+                  SlidableAction(
+                    backgroundColor: const Color.fromARGB(255, 255, 136, 0),
+                    icon: Icons.no_adult_content,
+                    label: "Passive",
+                    onPressed: (context) =>
+                        onDismissed(product, Actions.passive),
+                  )
+                ],
+              ),
               child: ListTile(
                 leading: isFirst
                     ? Column(
@@ -130,7 +144,7 @@ class DateProductWidget extends StatelessWidget {
                 trailing: Column(
                   children: [
                     Text(
-                      "${product.count}  ${"quantity".tr()}",
+                      "${product.count}  ${product.unit}",
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w700,
@@ -144,7 +158,11 @@ class DateProductWidget extends StatelessWidget {
                   ],
                 ),
                 contentPadding: EdgeInsets.all(deviceHeight * 0.015),
-                onTap: () {},
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => ProductDetailsPage(product: product),
+                  ));
+                },
               ),
             ),
           );
@@ -157,7 +175,9 @@ class DateProductWidget extends StatelessWidget {
     if (action == Actions.delete) {
       Get.find<HomeController>().deleteProduct(product);
     } else if (action == Actions.edit) {
-      Get.find<HomeController>().editProduct(product);
+      // Handle edit action
+    } else if (action == Actions.passive) {
+      Get.find<HomeController>().updateStatus(product, false);
     }
   }
 }
