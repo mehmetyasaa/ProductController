@@ -1,15 +1,14 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart' hide Trans;
 import 'package:easy_localization/easy_localization.dart';
 import 'package:imtapp/controllers/home_controller.dart';
 import 'package:imtapp/models/product_model.dart';
-import 'package:imtapp/routes/routes.dart';
 import 'package:imtapp/screens/product_details_page.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 
-enum Actions { delete, edit, passive }
+enum Actions { delete, send, passive }
 
 class DateProductWidget extends StatelessWidget {
   final DateTime date;
@@ -50,9 +49,9 @@ class DateProductWidget extends StatelessWidget {
                 children: [
                   SlidableAction(
                     backgroundColor: Colors.green,
-                    icon: Icons.edit,
-                    label: "edit".tr(),
-                    onPressed: (context) => onDismissed(product, Actions.edit),
+                    icon: Icons.send,
+                    label: "Gönder",
+                    onPressed: (context) => onDismissed(product, Actions.send),
                   ),
                   SlidableAction(
                     backgroundColor: Colors.red,
@@ -176,23 +175,73 @@ class DateProductWidget extends StatelessWidget {
   void onDismissed(Product product, Actions action) {
     if (action == Actions.delete) {
       Get.find<HomeController>().deleteProduct(product);
-    } else if (action == Actions.edit) {
-      updateFirestoreDocument(product);
+    } else if (action == Actions.send) {
+      checkAndCreateProductInApi(product);
     } else if (action == Actions.passive) {
       Get.find<HomeController>().updateStatus(product, false);
+    }
+  }
+
+  void checkAndCreateProductInApi(Product product) async {
+    try {
+      String apiUrl =
+          'https://firestore.googleapis.com/v1/projects/imtapp17/databases/(default)/documents/products/${product.id}';
+
+      final checkResponse = await http.get(Uri.parse(apiUrl));
+
+      if (checkResponse.statusCode == 404) {
+        final createResponse = await http.post(
+          Uri.parse(
+              'https://firestore.googleapis.com/v1/projects/imtapp17/databases/(default)/documents/products'),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: jsonEncode({
+            'fields': {
+              'id': {'stringValue': product.id},
+              'name': {'stringValue': product.name},
+              'description': {'stringValue': product.description},
+              'count': {'integerValue': product.count.toString()},
+              'createDate': {'stringValue': product.createDate},
+              'unit': {'stringValue': product.unit},
+              'status': {'booleanValue': true},
+            },
+          }),
+        );
+
+        if (createResponse.statusCode == 200) {
+          print('Ürün başarıyla oluşturuldu.');
+        } else {
+          print(
+              'Ürün oluşturulurken hata oluştu. HTTP ${createResponse.statusCode}');
+          print(createResponse.body);
+        }
+      } else if (checkResponse.statusCode == 200) {
+        updateFirestoreDocument(product);
+      } else {
+        print(
+            'Ürün kontrol edilirken hata oluştu. HTTP ${checkResponse.statusCode}');
+        print(checkResponse.body);
+      }
+    } catch (e) {
+      print('Hata: $e');
     }
   }
 
   void updateFirestoreDocument(Product product) async {
     try {
       String apiUrl =
-          'https://firestore.googleapis.com/v1/projects/imtapp17/databases/(default)/documents/products/4K8bIcnITXvKK7psbROT?';
+          'https://firestore.googleapis.com/v1/projects/imtapp17/databases/(default)/documents/products/${product.id}?';
 
       Map<String, dynamic> documentData = {
         'fields': {
-          'description': {'stringValue': product.description},
+          'id': {'stringValue': product.id},
           'name': {'stringValue': product.name},
-          'price': {'integerValue': product.price.toString()}
+          'description': {'stringValue': product.description},
+          'count': {'integerValue': product.count.toString()},
+          'createDate': {'stringValue': product.createDate},
+          'unit': {'stringValue': product.unit},
+          'status': {'booleanValue': true},
         }
       };
 

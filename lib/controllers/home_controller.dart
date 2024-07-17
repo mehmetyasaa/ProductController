@@ -202,4 +202,46 @@ class HomeController extends GetxController {
 
     return groupedProducts;
   }
+
+  // Yeni fonksiyon: Verileri bir koleksiyondan okuyarak başka bir koleksiyona yazma
+  Future<void> transferData(String sourceUserId, String targetUserId) async {
+    try {
+      // Kaynak koleksiyondan verileri al
+      DocumentSnapshot<Map<String, dynamic>> sourceDoc =
+          await _firestore.collection('users').doc(sourceUserId).get();
+
+      List<dynamic>? sourceProducts =
+          sourceDoc.data()?['products'] as List<dynamic>? ?? [];
+
+      // Hedef koleksiyona verileri yaz
+      for (var productData in sourceProducts) {
+        String newProductId = _firestore
+            .collection('users')
+            .doc(targetUserId)
+            .collection('products')
+            .doc()
+            .id;
+
+        final newProduct = {
+          'id': newProductId,
+          'name': productData['name'],
+          'description': productData['description'],
+          'count': productData['count'],
+          'createDate': productData['createDate'],
+          'unit': productData['unit'],
+          'status': productData['status'] ?? true,
+        };
+
+        await _firestore
+            .collection('users')
+            .doc(targetUserId)
+            .collection('products')
+            .doc(newProductId)
+            .set(newProduct);
+      }
+      print('Veriler başarıyla aktarıldı.');
+    } catch (e) {
+      print('Veri aktarımı sırasında hata: $e');
+    }
+  }
 }
