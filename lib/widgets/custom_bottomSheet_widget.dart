@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:board_datetime_picker/board_datetime_picker.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:get/get.dart' hide Trans;
+import 'package:image_picker/image_picker.dart';
 import 'package:imtapp/firebase/auth.dart';
 import 'package:imtapp/widgets/custom_form_widget.dart';
 import 'package:imtapp/controllers/home_controller.dart';
@@ -138,6 +139,29 @@ class CustomBottomSheetWidget extends StatelessWidget {
                 ),
               ),
             ),
+            // Expanded(
+            //   child: Column(
+            //     children: [
+            //       Expanded(
+            //         child: Center(
+            //           child: _image == null
+            //               ? Text('No image selected.')
+            //               : Image.file(_image!),
+            //         ),
+            //       ),
+            //       ElevatedButton(
+            //         onPressed: () async {
+            //           final image = await ImagePicker()
+            //               .pickImage(source: ImageSource.gallery);
+            //           if (image != null) {
+            //             _image = File(image.path);
+            //           }
+            //         },
+            //         child: Text('Select image'),
+            //       ),
+            //     ],
+            //   ),
+            // ),
             Padding(
               padding: EdgeInsets.symmetric(vertical: deviceHeight * 0.03),
               child: CustomButtonWidget(

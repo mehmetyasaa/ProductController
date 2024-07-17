@@ -6,6 +6,8 @@ import 'package:imtapp/controllers/home_controller.dart';
 import 'package:imtapp/models/product_model.dart';
 import 'package:imtapp/routes/routes.dart';
 import 'package:imtapp/screens/product_details_page.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 enum Actions { delete, edit, passive }
 
@@ -175,9 +177,41 @@ class DateProductWidget extends StatelessWidget {
     if (action == Actions.delete) {
       Get.find<HomeController>().deleteProduct(product);
     } else if (action == Actions.edit) {
-      // Handle edit action
+      updateFirestoreDocument(product);
     } else if (action == Actions.passive) {
       Get.find<HomeController>().updateStatus(product, false);
+    }
+  }
+
+  void updateFirestoreDocument(Product product) async {
+    try {
+      String apiUrl =
+          'https://firestore.googleapis.com/v1/projects/imtapp17/databases/(default)/documents/products/4K8bIcnITXvKK7psbROT?';
+
+      Map<String, dynamic> documentData = {
+        'fields': {
+          'description': {'stringValue': product.description},
+          'name': {'stringValue': product.name},
+          'price': {'integerValue': product.price.toString()}
+        }
+      };
+
+      final response = await http.patch(
+        Uri.parse(apiUrl),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(documentData),
+      );
+
+      if (response.statusCode == 200) {
+        print('Belge başarıyla güncellendi.');
+      } else {
+        print('Belge güncellenirken hata oluştu. HTTP ${response.statusCode}');
+        print(response.body);
+      }
+    } catch (e) {
+      print('Hata: $e');
     }
   }
 }

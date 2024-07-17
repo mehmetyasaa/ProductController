@@ -16,4 +16,6 @@ class Product {
     required this.unit,
     this.status,
   });
+
+  get price => null;
 }

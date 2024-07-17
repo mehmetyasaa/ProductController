@@ -18,7 +18,7 @@ class ProductDetailsPage extends StatelessWidget {
         padding: const EdgeInsets.all(4.0),
         child: Stack(
           children: [
-            Positioned.fill(
+            const Positioned.fill(
               child:
                   RoundedCornerImage(productImage: 'assets/image/profile.png'),
             ),
@@ -83,8 +83,8 @@ class RoundedCornerImage extends StatelessWidget {
         offset: const Offset(0, -135),
         child: Transform.scale(
           scale: 1.1,
-          child: Image.asset("assets/image/profile.png"),
           alignment: Alignment.topCenter,
+          child: Image.asset("assets/image/profile.png"),
         ),
       ),
     );

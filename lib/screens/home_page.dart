@@ -173,6 +173,7 @@ class HomePage extends StatelessWidget {
                 child: Padding(
                   padding: EdgeInsets.all(deviceHeight * 0.02),
                   child: TextField(
+                    maxLength: 30,
                     onChanged: (value) {
                       controller.filterSearchResult(value);
                     },

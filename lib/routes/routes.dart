@@ -1,7 +1,6 @@
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:imtapp/screens/home_page.dart';
 import 'package:imtapp/screens/login.dart';
-import 'package:imtapp/screens/product_details_page.dart';
 import 'package:imtapp/screens/signup.dart';
 
 class RoutesClass {
