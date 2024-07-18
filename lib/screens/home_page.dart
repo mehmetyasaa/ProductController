@@ -119,18 +119,7 @@ class HomePage extends StatelessWidget {
                   bottom: 20,
                   top: 8,
                 ),
-                child: CustomBottomSheetWidget(
-                  name: name,
-                  description: description,
-                  createDate: createDate,
-                  count: count,
-                  dropdownValue: dropdownValue,
-                  onDropdownChanged: (String? newValue) {
-                    if (newValue != null) {
-                      dropdownValue = newValue;
-                    }
-                  },
-                )),
+                child: CustomBottomSheetWidget()),
           );
         },
         child: const Icon(

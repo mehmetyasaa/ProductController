@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get/get.dart';
 import 'package:imtapp/firebase/auth.dart';
 import 'package:imtapp/models/product_model.dart';
@@ -138,6 +141,7 @@ class HomeController extends GetxController {
     final DateTime createDate,
     final int count,
     final String unit,
+    final File? image, // Add this parameter
   ) async {
     String formattedCreateDate =
         "${createDate.day}/${createDate.month}/${createDate.year}";
@@ -149,14 +153,29 @@ class HomeController extends GetxController {
         .doc()
         .id;
 
+    String imageUrl = ''; // Default empty URL
+
+    if (image != null) {
+      // Upload image to Firebase Storage
+      final storageRef = FirebaseStorage.instance
+          .ref()
+          .child('product_images')
+          .child('$newProductId.jpg');
+      await storageRef.putFile(image);
+
+      // Get the URL of the uploaded image
+      imageUrl = await storageRef.getDownloadURL();
+    }
+
     final newProduct = {
-      "id": newProductId, // Include the generated id
+      "id": newProductId,
       "name": name,
       "description": description,
       "count": count,
       "createDate": formattedCreateDate,
       "unit": unit,
       "status": true,
+      "image": imageUrl, // Save the image URL
     };
 
     DocumentSnapshot<Map<String, dynamic>> userDoc =

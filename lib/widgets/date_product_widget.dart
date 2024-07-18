@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart' hide Trans;
@@ -6,8 +5,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:imtapp/controllers/home_controller.dart';
 import 'package:imtapp/models/product_model.dart';
 import 'package:imtapp/screens/product_details_page.dart';
-
-import 'package:http/http.dart' as http;
 import 'package:imtapp/service/api_service.dart';
 
 enum Actions { delete, send, passive }
@@ -67,6 +64,7 @@ class DateProductWidget extends StatelessWidget {
                         );
                       } else {
                         showDialog(
+                          // ignore: use_build_context_synchronously
                           context: context,
                           builder: (BuildContext context) {
                             TextEditingController messageController =

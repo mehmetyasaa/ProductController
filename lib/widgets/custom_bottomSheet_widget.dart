@@ -1,29 +1,19 @@
-// ignore: file_names
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:board_datetime_picker/board_datetime_picker.dart';
-import 'package:easy_localization/easy_localization.dart';
-import 'package:get/get.dart' hide Trans;
+import 'package:get/get.dart';
+import 'package:imtapp/controllers/CustomBottomSheetController.dart';
 import 'package:imtapp/firebase/auth.dart';
 import 'package:imtapp/widgets/custom_form_widget.dart';
 import 'package:imtapp/controllers/home_controller.dart';
+import 'package:image_picker/image_picker.dart';
 
 class CustomBottomSheetWidget extends StatelessWidget {
-  final TextEditingController name;
-  final TextEditingController description;
-  final TextEditingController createDate;
-  final TextEditingController count;
-  final String dropdownValue;
-  final void Function(String?) onDropdownChanged;
+  CustomBottomSheetWidget({super.key});
 
-  const CustomBottomSheetWidget({
-    super.key,
-    required this.name,
-    required this.description,
-    required this.createDate,
-    required this.count,
-    required this.dropdownValue,
-    required this.onDropdownChanged,
-  });
+  final CustomBottomSheetController _controller =
+      Get.put(CustomBottomSheetController());
+  final HomeController _homeController = Get.find<HomeController>();
 
   @override
   Widget build(BuildContext context) {
@@ -44,19 +34,19 @@ class CustomBottomSheetWidget extends StatelessWidget {
             Padding(
               padding: EdgeInsets.all(deviceHeight * 0.02),
               child: Text(
-                "Add Product".tr(),
+                "Add Product",
                 style:
                     const TextStyle(fontWeight: FontWeight.w500, fontSize: 24),
               ),
             ),
             CustomFormWidget(
-              controller: name,
-              labelText: "name".tr(),
+              controller: _controller.name,
+              labelText: "name",
               icon: const Icon(Icons.tag),
             ),
             CustomFormWidget(
-              controller: description,
-              labelText: "description".tr(),
+              controller: _controller.description,
+              labelText: "description",
               icon: const Icon(Icons.description),
             ),
             Padding(
@@ -70,10 +60,10 @@ class CustomBottomSheetWidget extends StatelessWidget {
                     pickerType: DateTimePickerType.datetime,
                     options: BoardDateTimeOptions(
                       languages: BoardPickerLanguages(
-                        locale: 'en'.tr(),
-                        today: 'today'.tr(),
-                        tomorrow: 'tomorrow'.tr(),
-                        now: 'now'.tr(),
+                        locale: 'en',
+                        today: 'today',
+                        tomorrow: 'tomorrow',
+                        now: 'now',
                       ),
                       startDayOfWeek: DateTime.sunday,
                       pickerFormat: PickerFormat.ymd,
@@ -84,12 +74,13 @@ class CustomBottomSheetWidget extends StatelessWidget {
                   );
 
                   if (picked != null) {
-                    createDate.text = "${picked.toLocal()}".split(' ')[0];
+                    _controller.createDate.text =
+                        "${picked.toLocal()}".split(' ')[0];
                   }
                 },
-                controller: createDate,
+                controller: _controller.createDate,
                 decoration: InputDecoration(
-                  labelText: "date".tr(),
+                  labelText: "date",
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(22),
                   ),
@@ -99,8 +90,8 @@ class CustomBottomSheetWidget extends StatelessWidget {
               ),
             ),
             CustomFormWidget(
-              controller: count,
-              labelText: "quantity".tr(),
+              controller: _controller.count,
+              labelText: "quantity",
               icon: const Icon(Icons.format_list_numbered),
             ),
             Padding(
@@ -114,80 +105,81 @@ class CustomBottomSheetWidget extends StatelessWidget {
                     width: deviceHeight * 0.0006,
                   ),
                 ),
-                child: DropdownButtonFormField<String>(
-                  decoration: InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide.none,
-                      borderRadius: BorderRadius.circular(15.0),
+                child: Obx(
+                  () => DropdownButtonFormField<String>(
+                    decoration: InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(15.0),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(15.0),
+                      ),
                     ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide.none,
-                      borderRadius: BorderRadius.circular(15.0),
-                    ),
+                    value: _controller.dropdownValue.value,
+                    icon: const Icon(Icons.arrow_downward),
+                    elevation: 16,
+                    style: const TextStyle(color: Colors.black),
+                    onChanged: _controller.setDropdownValue,
+                    items: list.map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
                   ),
-                  value: dropdownValue,
-                  icon: const Icon(Icons.arrow_downward),
-                  elevation: 16,
-                  style: const TextStyle(color: Colors.black),
-                  onChanged: onDropdownChanged,
-                  items: list.map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
                 ),
               ),
             ),
-            // Expanded(
-            //   child: Column(
-            //     children: [
-            //       Expanded(
-            //         child: Center(
-            //           child: _image == null
-            //               ? Text('No image selected.')
-            //               : Image.file(_image!),
-            //         ),
-            //       ),
-            //       ElevatedButton(
-            //         onPressed: () async {
-            //           final image = await ImagePicker()
-            //               .pickImage(source: ImageSource.gallery);
-            //           if (image != null) {
-            //             _image = File(image.path);
-            //           }
-            //         },
-            //         child: Text('Select image'),
-            //       ),
-            //     ],
-            //   ),
-            // ),
+            Padding(
+              padding: EdgeInsets.all(deviceHeight * 0.012),
+              child: Column(
+                children: [
+                  Obx(
+                    () => _controller.image.value != null
+                        ? Image.file(
+                            _controller.image.value!,
+                            height: deviceHeight * 0.2,
+                          )
+                        : const Text('No image selected.'),
+                  ),
+                  ElevatedButton(
+                    onPressed: _controller.pickImage,
+                    child: const Text('Select image'),
+                  ),
+                ],
+              ),
+            ),
             Padding(
               padding: EdgeInsets.symmetric(vertical: deviceHeight * 0.03),
               child: CustomButtonWidget(
-                btnText: "save".tr(),
+                btnText: "save",
                 onPressed: () async {
-                  if (name.text.isEmpty ||
-                      description.text.isEmpty ||
-                      count.text.isEmpty ||
-                      createDate.text.isEmpty) {
+                  if (_controller.name.text.isEmpty ||
+                      _controller.description.text.isEmpty ||
+                      _controller.count.text.isEmpty ||
+                      _controller.createDate.text.isEmpty) {
                     return;
                   }
 
-                  Get.find<HomeController>().create(
-                      Auth().currentUser!.uid,
-                      name.text,
-                      description.text,
-                      DateTime.parse(createDate.text),
-                      int.parse(count.text),
-                      dropdownValue);
+                  await _homeController.create(
+                    Auth().currentUser!.uid,
+                    _controller.name.text,
+                    _controller.description.text,
+                    DateTime.parse(_controller.createDate.text),
+                    int.parse(_controller.count.text),
+                    _controller.dropdownValue.value,
+                    _controller.image.value,
+                  );
 
-                  name.text = "";
-                  description.text = "";
-                  createDate.text = "";
-                  count.text = "";
+                  _controller.name.clear();
+                  _controller.description.clear();
+                  _controller.createDate.clear();
+                  _controller.count.clear();
+                  _controller.image.value = null;
 
-                  Get.find<HomeController>().fetchProducts();
+                  _homeController.fetchProducts();
                   Get.back();
                 },
               ),
