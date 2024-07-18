@@ -21,6 +21,38 @@ class HomeController extends GetxController {
     });
   }
 
+  Future<Product> fetchLatestProduct(String productId) async {
+    User? currentUser = Auth().currentUser;
+    if (currentUser == null) {
+      throw Exception("No user is currently signed in");
+    }
+    String uid = currentUser.uid;
+
+    DocumentSnapshot userDoc =
+        await _firestore.collection('users').doc(uid).get();
+    Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;
+
+    if (userData.containsKey('products')) {
+      List<dynamic> userProducts = userData['products'];
+
+      for (var productData in userProducts) {
+        if (productData['id'] == productId) {
+          return Product(
+            id: productData['id'],
+            name: productData['name'],
+            description: productData['description'],
+            createDate: productData['createDate'],
+            count: productData['count'],
+            unit: productData['unit'],
+            status: productData['status'],
+            image: productData['image'],
+          );
+        }
+      }
+    }
+    throw Exception("Product not found");
+  }
+
   void clearProducts() {
     productList.clear();
     filteredProducts.clear();

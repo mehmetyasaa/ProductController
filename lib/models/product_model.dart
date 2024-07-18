@@ -2,42 +2,22 @@ class Product {
   final String id;
   final String name;
   final String description;
+  final String createDate; // Changed to String
   final int count;
-  final String createDate;
   final String unit;
-  final String? image; // Optional image field
+  final bool? status;
+  final String? image;
 
   Product({
     required this.id,
     required this.name,
     required this.description,
-    required this.count,
     required this.createDate,
+    required this.count,
     required this.unit,
-    this.image, // Initialize image as optional
+    this.status,
+    this.image,
   });
 
-  factory Product.fromJson(Map<String, dynamic> json) {
-    return Product(
-      id: json['id'],
-      name: json['name'],
-      description: json['description'],
-      count: json['count'],
-      createDate: json['createDate'],
-      unit: json['unit'],
-      image: json['image'], // Parse image from JSON
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'description': description,
-      'count': count,
-      'createDate': createDate,
-      'unit': unit,
-      'image': image, // Include image in JSON
-    };
-  }
+  get price => null;
 }

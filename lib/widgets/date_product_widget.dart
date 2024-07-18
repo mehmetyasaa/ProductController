@@ -6,7 +6,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:imtapp/controllers/home_controller.dart';
 import 'package:imtapp/models/product_model.dart';
 import 'package:imtapp/screens/product_details_page.dart';
-// ignore: depend_on_referenced_packages
+
 import 'package:http/http.dart' as http;
 import 'package:imtapp/service/api_service.dart';
 
@@ -53,60 +53,76 @@ class DateProductWidget extends StatelessWidget {
                     backgroundColor: Colors.green,
                     icon: Icons.send,
                     label: "Gönder",
-                    onPressed: (context) {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          TextEditingController messageController =
-                              TextEditingController();
+                    onPressed: (context) async {
+                      // Fetch the latest product data
+                      Product latestProduct = await Get.find<HomeController>()
+                          .fetchLatestProduct(product.id);
 
-                          return AlertDialog(
-                            title: Text(
-                                "'${product.name}' isimli ürünü gönderiyorsunuz"),
-                            content: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: const Row(
-                                    children: [
-                                      Icon(
-                                        Icons.info,
-                                        color: Colors.red,
+                      if (latestProduct.status == null ||
+                          !latestProduct.status!) {
+                        Get.snackbar(
+                          "Ürün Aktif Değil",
+                          "'${latestProduct.name}' isimli ürün aktif değil, bu yüzden gönderilemez.",
+                          snackPosition: SnackPosition.BOTTOM,
+                        );
+                      } else {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            TextEditingController messageController =
+                                TextEditingController();
+
+                            return AlertDialog(
+                              title: Text(
+                                  "'${latestProduct.name}' isimli ürünü gönderiyorsunuz"),
+                              content: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(4.0),
+                                    child: Container(
+                                      color: Colors.red.shade50,
+                                      child: const Row(
+                                        children: [
+                                          Icon(
+                                            Icons.info,
+                                            color: Colors.red,
+                                          ),
+                                          Text(
+                                            "Veri gönderebilmek için Firebase\nprojenizde Firestore Database\naçılmalı ve 'products' isimli collection \noluşturulmalıdır.",
+                                            style: TextStyle(fontSize: 12),
+                                          ),
+                                        ],
                                       ),
-                                      Text(
-                                        "Veri gönderebilmek için, Firebase \nprojenizde Firestore Database \naçılmalı ve 'products' isimli \ncollection oluşturulmalıdır.",
-                                        style: TextStyle(fontSize: 13),
-                                      ),
-                                    ],
+                                    ),
                                   ),
+                                  TextFormField(
+                                    controller: messageController,
+                                    decoration: const InputDecoration(
+                                      labelText: 'Veri Tabanı Adı',
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () => Get.back(),
+                                  child: const Text('İptal'),
                                 ),
-                                TextFormField(
-                                  controller: messageController,
-                                  decoration: InputDecoration(
-                                    labelText: 'Veri Tabanı Adı',
-                                  ),
+                                TextButton(
+                                  onPressed: () {
+                                    ApiService().checkAndCreateProductInApi(
+                                        latestProduct,
+                                        projeName: messageController.text);
+                                    Get.back();
+                                  },
+                                  child: const Text('Gönder'),
                                 ),
                               ],
-                            ),
-                            actions: <Widget>[
-                              TextButton(
-                                onPressed: () => Get.back(),
-                                child: Text('İptal'),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  ApiService().checkAndCreateProductInApi(
-                                      product,
-                                      projeName: messageController.text);
-                                  Get.back();
-                                },
-                                child: const Text('Gönder'),
-                              ),
-                            ],
-                          );
-                        },
-                      );
+                            );
+                          },
+                        );
+                      }
                     },
                   ),
                   SlidableAction(
@@ -144,12 +160,12 @@ class DateProductWidget extends StatelessWidget {
                 ],
               ),
               startActionPane: ActionPane(
-                motion: const StretchMotion(),
+                motion: const BehindMotion(),
                 children: [
                   SlidableAction(
-                    backgroundColor: const Color.fromARGB(255, 255, 136, 0),
-                    icon: Icons.no_adult_content,
-                    label: "Passive",
+                    backgroundColor: const Color.fromARGB(255, 255, 218, 194),
+                    icon: Icons.published_with_changes,
+                    label: "Status Change",
                     onPressed: (context) =>
                         onDismissed(product, Actions.passive),
                   )
