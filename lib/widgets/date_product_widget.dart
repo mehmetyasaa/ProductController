@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart' hide Trans;
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:imtapp/controllers/home_controller.dart';
 import 'package:imtapp/models/product_model.dart';
 import 'package:imtapp/screens/product_details_page.dart';
@@ -204,6 +205,9 @@ class DateProductWidget extends StatelessWidget {
               'count': {'integerValue': product.count.toString()},
               'createDate': {'stringValue': product.createDate},
               'unit': {'stringValue': product.unit},
+              'image': {
+                'stringValue': product.image ?? ''
+              }, // Include image field
               'status': {'booleanValue': true},
             },
           }),
@@ -241,6 +245,7 @@ class DateProductWidget extends StatelessWidget {
           'count': {'integerValue': product.count.toString()},
           'createDate': {'stringValue': product.createDate},
           'unit': {'stringValue': product.unit},
+          'image': {'stringValue': product.image ?? ''}, // Include image field
           'status': {'booleanValue': true},
         }
       };

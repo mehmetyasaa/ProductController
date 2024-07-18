@@ -50,7 +50,8 @@ class HomeController extends GetxController {
         prod['description'] == product.description &&
         prod['createDate'] == product.createDate &&
         prod['count'] == product.count &&
-        prod['unit'] == product.unit);
+        prod['unit'] == product.unit &&
+        prod['image'] == product.image);
 
     await userDocRef.update({'products': userProducts});
 
@@ -87,6 +88,7 @@ class HomeController extends GetxController {
           createDate: productData['createDate'],
           count: productData['count'],
           unit: productData['unit'],
+          image: productData['image'],
         );
         productDocumentIds[product] = userDoc.id;
         products.add(product);

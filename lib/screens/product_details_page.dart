@@ -1,33 +1,54 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:imtapp/controllers/product_controller.dart';
 import 'package:imtapp/models/product_model.dart';
 
 class ProductDetailsPage extends StatelessWidget {
   final Product product;
 
-  const ProductDetailsPage({super.key, required this.product});
+  ProductDetailsPage({
+    Key? key,
+    required this.product,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    // Initialize the controller inside the build method
+    final ProductController controller =
+        Get.put(ProductController(product), tag: product.id);
+
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(),
-      bottomNavigationBar: ButtonsBar(
-        buyButtonText: 'Gönder',
-        onBuyButtonTapped: () {},
-      ),
       body: Padding(
         padding: const EdgeInsets.all(4.0),
         child: Stack(
           children: [
-            const Positioned.fill(
-              child:
-                  RoundedCornerImage(productImage: 'assets/image/profile.png'),
-            ),
+            Obx(() {
+              if (controller.imageUrl.value.isEmpty) {
+                return Center(child: CircularProgressIndicator());
+              } else if (controller.imageUrl.value ==
+                  'assets/image/profile.png') {
+                return Positioned.fill(
+                  child: RoundedCornerImage(
+                    productImage: 'assets/image/profile.png',
+                    isNetworkImage: false,
+                  ),
+                );
+              } else {
+                return Positioned.fill(
+                  child: RoundedCornerImage(
+                    productImage: controller.imageUrl.value,
+                  ),
+                );
+              }
+            }),
             Align(
               alignment: Alignment.bottomCenter,
               child: CurvedCornerContainer(
                 child: DescriptionContent(product: product),
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -35,45 +56,15 @@ class ProductDetailsPage extends StatelessWidget {
   }
 }
 
-class DescriptionContent extends StatelessWidget {
-  final Product product;
-
-  const DescriptionContent({super.key, required this.product});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 24, right: 24, bottom: 200, top: 8),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.end,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            product.name,
-            style: const TextStyle(fontSize: 30, fontWeight: FontWeight.w600),
-          ),
-          Text(
-            product.description, // Assuming product has a brand field
-            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 28),
-            child: Text(
-              product.description,
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 class RoundedCornerImage extends StatelessWidget {
   final String productImage;
+  final bool isNetworkImage;
 
-  const RoundedCornerImage({super.key, required this.productImage});
+  const RoundedCornerImage({
+    Key? key,
+    required this.productImage,
+    this.isNetworkImage = true,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +75,9 @@ class RoundedCornerImage extends StatelessWidget {
         child: Transform.scale(
           scale: 1.1,
           alignment: Alignment.topCenter,
-          child: Image.asset("assets/image/profile.png"),
+          child: isNetworkImage
+              ? Image.network(productImage)
+              : Image.asset(productImage),
         ),
       ),
     );
@@ -94,7 +87,7 @@ class RoundedCornerImage extends StatelessWidget {
 class CurvedCornerContainer extends StatelessWidget {
   final Widget? child;
 
-  const CurvedCornerContainer({super.key, this.child});
+  const CurvedCornerContainer({Key? key, this.child}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -133,41 +126,82 @@ class FancyClipPath extends CustomClipper<Path> {
   }
 }
 
-class ButtonsBar extends StatelessWidget {
-  final String buyButtonText;
-  final VoidCallback? onBuyButtonTapped;
+class DescriptionContent extends StatelessWidget {
+  final Product product;
 
-  const ButtonsBar(
-      {super.key, required this.buyButtonText, this.onBuyButtonTapped});
+  const DescriptionContent({Key? key, required this.product}) : super(key: key);
+  final cOrange = const Color.fromARGB(255, 255, 123, 0);
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(24),
-      child: Row(
+      padding: const EdgeInsets.only(left: 90, right: 90, bottom: 20, top: 70),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Flexible(
-            flex: 6,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8))),
-              onPressed: onBuyButtonTapped,
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Text(
-                  buyButtonText,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-            ),
+          Text(
+            "Ürün Adı",
+            style: TextStyle(
+                fontSize: 25, fontWeight: FontWeight.w600, color: cOrange),
           ),
-          const Spacer(flex: 2),
-          const Icon(Icons.file_upload_outlined),
-          const Spacer(flex: 1),
-          const Icon(Icons.favorite_border_outlined)
+          Text(
+            product.name,
+            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w500),
+          ),
+          const SizedBox(height: 20),
+          Text(
+            "Ürün Açıklaması",
+            style: TextStyle(
+                fontSize: 25, fontWeight: FontWeight.w500, color: cOrange),
+          ),
+          Text(
+            product.description,
+            style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
+          ),
+          const SizedBox(height: 25),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                children: [
+                  const Text(
+                    "Miktar",
+                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
+                  ),
+                  Text(
+                    product.count.toString(),
+                    style: const TextStyle(
+                        fontSize: 17, fontWeight: FontWeight.w400),
+                  ),
+                ],
+              ),
+              Column(
+                children: [
+                  const Text(
+                    "Birim",
+                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
+                  ),
+                  Text(
+                    product.unit,
+                    style: const TextStyle(
+                        fontSize: 17, fontWeight: FontWeight.w400),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          Text(
+            "Tarih",
+            style: TextStyle(
+                fontSize: 22, fontWeight: FontWeight.w500, color: cOrange),
+          ),
+          Text(
+            product.createDate,
+            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
+          ),
         ],
       ),
     );
