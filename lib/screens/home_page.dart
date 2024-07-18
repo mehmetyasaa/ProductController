@@ -7,6 +7,7 @@ import 'package:imtapp/widgets/custom_bottomSheet_widget.dart';
 import 'package:imtapp/widgets/date_product_widget.dart';
 import 'package:imtapp/models/product_model.dart';
 
+// ignore: must_be_immutable
 class HomePage extends StatelessWidget {
   HomePage({super.key});
 
@@ -21,8 +22,8 @@ class HomePage extends StatelessWidget {
   String dropdownValue = 'Kg';
   final PageController controllerr = PageController(initialPage: 0);
   //drawer
-  String? username = Auth().currentUser?.displayName;
-  String? email = Auth().currentUser!.email;
+  final String? username = Auth().currentUser?.displayName;
+  final String? email = Auth().currentUser!.email;
 
   @override
   Widget build(BuildContext context) {

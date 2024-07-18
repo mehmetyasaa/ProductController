@@ -2,34 +2,40 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:imtapp/controllers/product_controller.dart';
 import 'package:imtapp/models/product_model.dart';
+import 'package:imtapp/service/api_service.dart';
 
 class ProductDetailsPage extends StatelessWidget {
   final Product product;
 
-  ProductDetailsPage({
-    Key? key,
+  const ProductDetailsPage({
+    super.key,
     required this.product,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
-    // Initialize the controller inside the build method
     final ProductController controller =
         Get.put(ProductController(product), tag: product.id);
 
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(),
+      bottomNavigationBar: ButtonsBar(
+        sendButtonText: "Gönder",
+        onBuyButtonTapped: () {
+          ApiService().checkAndCreateProductInApi(product);
+        },
+      ),
       body: Padding(
         padding: const EdgeInsets.all(4.0),
         child: Stack(
           children: [
             Obx(() {
               if (controller.imageUrl.value.isEmpty) {
-                return Center(child: CircularProgressIndicator());
+                return const Center(child: CircularProgressIndicator());
               } else if (controller.imageUrl.value ==
                   'assets/image/profile.png') {
-                return Positioned.fill(
+                return const Positioned.fill(
                   child: RoundedCornerImage(
                     productImage: 'assets/image/profile.png',
                     isNetworkImage: false,
@@ -61,10 +67,10 @@ class RoundedCornerImage extends StatelessWidget {
   final bool isNetworkImage;
 
   const RoundedCornerImage({
-    Key? key,
+    super.key,
     required this.productImage,
     this.isNetworkImage = true,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +93,7 @@ class RoundedCornerImage extends StatelessWidget {
 class CurvedCornerContainer extends StatelessWidget {
   final Widget? child;
 
-  const CurvedCornerContainer({Key? key, this.child}) : super(key: key);
+  const CurvedCornerContainer({super.key, this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -129,7 +135,7 @@ class FancyClipPath extends CustomClipper<Path> {
 class DescriptionContent extends StatelessWidget {
   final Product product;
 
-  const DescriptionContent({Key? key, required this.product}) : super(key: key);
+  const DescriptionContent({super.key, required this.product});
   final cOrange = const Color.fromARGB(255, 255, 123, 0);
 
   @override
@@ -201,6 +207,48 @@ class DescriptionContent extends StatelessWidget {
           Text(
             product.createDate,
             style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class ButtonsBar extends StatelessWidget {
+  final String sendButtonText;
+  final VoidCallback? onBuyButtonTapped;
+
+  const ButtonsBar(
+      {super.key, required this.sendButtonText, this.onBuyButtonTapped});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(24),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Flexible(
+            flex: 6,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                backgroundColor: Colors.orange,
+              ),
+              onPressed: onBuyButtonTapped,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  sendButtonText,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 16,
+                      color: Colors.white),
+                ),
+              ),
+            ),
           ),
         ],
       ),

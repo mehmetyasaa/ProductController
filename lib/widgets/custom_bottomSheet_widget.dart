@@ -1,8 +1,8 @@
+// ignore: file_names
 import 'package:flutter/material.dart';
 import 'package:board_datetime_picker/board_datetime_picker.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:get/get.dart' hide Trans;
-import 'package:image_picker/image_picker.dart';
 import 'package:imtapp/firebase/auth.dart';
 import 'package:imtapp/widgets/custom_form_widget.dart';
 import 'package:imtapp/controllers/home_controller.dart';
@@ -33,7 +33,7 @@ class CustomBottomSheetWidget extends StatelessWidget {
     const List<String> list = <String>['Kg', 'G', 'L', 'Ml'];
 
     return SingleChildScrollView(
-      physics: BouncingScrollPhysics(),
+      physics: const BouncingScrollPhysics(),
       child: Padding(
         padding: EdgeInsets.only(
           bottom: MediaQuery.of(context).viewInsets.bottom,
@@ -201,10 +201,10 @@ class CustomBottomSheetWidget extends StatelessWidget {
 
 class CustomButtonWidget extends StatelessWidget {
   const CustomButtonWidget({
-    Key? key,
+    super.key,
     required this.btnText,
     required this.onPressed,
-  }) : super(key: key);
+  });
 
   final String btnText;
   final void Function() onPressed;

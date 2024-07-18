@@ -21,7 +21,6 @@ class ProductController extends GetxController {
         final url = await ref.getDownloadURL();
         imageUrl.value = url;
       } catch (e) {
-        // Hata durumunda burada işleme alın
         print('Firebase Storage\'dan resim yükleme hatası: $e');
       }
     } else {
