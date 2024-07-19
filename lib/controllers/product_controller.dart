@@ -16,16 +16,17 @@ class ProductController extends GetxController {
   }
 
   Future<void> _getImageUrl() async {
-    if (product.image != null) {
+    if (product.image != null && product.image!.isNotEmpty) {
       try {
         final ref = FirebaseStorage.instance.refFromURL(product.image!);
         final url = await ref.getDownloadURL();
         imageUrl.value = url;
       } catch (e) {
-        print('Firebase Storage\'dan resim yükleme hatası: $e');
+        print('Error loading image from Firebase Storage: $e');
+        imageUrl.value = 'assets/image/imtLogo.png';
       }
     } else {
-      imageUrl.value = 'assets/image/profile.png';
+      imageUrl.value = 'assets/image/imtLogo.png';
     }
     isLoading.value = false;
   }

@@ -19,7 +19,6 @@ class HomePage extends StatelessWidget {
 
   final HomeController controller = Get.put(HomeController());
 
-  String dropdownValue = 'Kg';
   final PageController controllerr = PageController(initialPage: 0);
   //drawer
   final String? username = Auth().currentUser?.displayName;

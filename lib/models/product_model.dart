@@ -2,7 +2,7 @@ class Product {
   final String id;
   final String name;
   final String description;
-  final String createDate; // Changed to String
+  final String createDate;
   final int count;
   final String unit;
   final bool? status;

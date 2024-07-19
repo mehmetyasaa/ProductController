@@ -114,7 +114,7 @@ class LoginPage extends StatelessWidget {
                     Text("Don't have an account?".tr()),
                     TextButton(
                       onPressed: () {
-                        Get.toNamed(RoutesClass.signup);
+                        Get.offAllNamed(RoutesClass.signup);
                       },
                       child: Text(
                         "signup".tr(),

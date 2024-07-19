@@ -163,6 +163,8 @@ class HomeController extends GetxController {
       await storageRef.putFile(image);
 
       imageUrl = await storageRef.getDownloadURL();
+    } else {
+      imageUrl = "assets/image/imtLogo.png";
     }
 
     final newProduct = {
@@ -173,6 +175,7 @@ class HomeController extends GetxController {
       "createDate": formattedCreateDate,
       "unit": unit,
       "status": true,
+      // ignore: unnecessary_null_comparison
       "image": imageUrl,
     };
 

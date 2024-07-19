@@ -39,10 +39,10 @@ class ProductDetailsPage extends StatelessWidget {
               } else if (controller.imageUrl.value.isEmpty) {
                 return const Center(child: CircularProgressIndicator());
               } else if (controller.imageUrl.value ==
-                  'assets/image/profile.png') {
+                  'assets/image/imtLogo.png') {
                 return const Positioned.fill(
                   child: RoundedCornerImage(
-                    productImage: 'assets/image/profile.png',
+                    productImage: 'assets/image/imtLogo.png',
                     isNetworkImage: false,
                   ),
                 );
