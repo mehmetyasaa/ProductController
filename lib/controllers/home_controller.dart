@@ -141,7 +141,7 @@ class HomeController extends GetxController {
     final DateTime createDate,
     final int count,
     final String unit,
-    final File? image, // Add this parameter
+    final File? image,
   ) async {
     String formattedCreateDate =
         "${createDate.day}/${createDate.month}/${createDate.year}";
@@ -153,17 +153,15 @@ class HomeController extends GetxController {
         .doc()
         .id;
 
-    String imageUrl = ''; // Default empty URL
+    String imageUrl = '';
 
     if (image != null) {
-      // Upload image to Firebase Storage
       final storageRef = FirebaseStorage.instance
           .ref()
           .child('product_images')
           .child('$newProductId.jpg');
       await storageRef.putFile(image);
 
-      // Get the URL of the uploaded image
       imageUrl = await storageRef.getDownloadURL();
     }
 
@@ -175,7 +173,7 @@ class HomeController extends GetxController {
       "createDate": formattedCreateDate,
       "unit": unit,
       "status": true,
-      "image": imageUrl, // Save the image URL
+      "image": imageUrl,
     };
 
     DocumentSnapshot<Map<String, dynamic>> userDoc =
@@ -256,17 +254,14 @@ class HomeController extends GetxController {
     return groupedProducts;
   }
 
-  // Yeni fonksiyon: Verileri bir koleksiyondan okuyarak başka bir koleksiyona yazma
   Future<void> transferData(String sourceUserId, String targetUserId) async {
     try {
-      // Kaynak koleksiyondan verileri al
       DocumentSnapshot<Map<String, dynamic>> sourceDoc =
           await _firestore.collection('users').doc(sourceUserId).get();
 
       List<dynamic>? sourceProducts =
           sourceDoc.data()?['products'] as List<dynamic>? ?? [];
 
-      // Hedef koleksiyona verileri yaz
       for (var productData in sourceProducts) {
         String newProductId = _firestore
             .collection('users')

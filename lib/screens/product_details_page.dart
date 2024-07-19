@@ -31,7 +31,12 @@ class ProductDetailsPage extends StatelessWidget {
         child: Stack(
           children: [
             Obx(() {
-              if (controller.imageUrl.value.isEmpty) {
+              if (controller.isLoading.value) {
+                return const Padding(
+                  padding: EdgeInsets.only(bottom: 200.0),
+                  child: Center(child: CircularProgressIndicator()),
+                );
+              } else if (controller.imageUrl.value.isEmpty) {
                 return const Center(child: CircularProgressIndicator());
               } else if (controller.imageUrl.value ==
                   'assets/image/profile.png') {
@@ -102,7 +107,7 @@ class CurvedCornerContainer extends StatelessWidget {
       child: Container(
         constraints:
             const BoxConstraints(minHeight: 400, maxHeight: 600, minWidth: 400),
-        color: Colors.white,
+        color: Colors.white.withOpacity(0.97),
         child: child,
       ),
     );

@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:board_datetime_picker/board_datetime_picker.dart';
 import 'package:get/get.dart';
@@ -6,7 +5,6 @@ import 'package:imtapp/controllers/CustomBottomSheetController.dart';
 import 'package:imtapp/firebase/auth.dart';
 import 'package:imtapp/widgets/custom_form_widget.dart';
 import 'package:imtapp/controllers/home_controller.dart';
-import 'package:image_picker/image_picker.dart';
 
 class CustomBottomSheetWidget extends StatelessWidget {
   CustomBottomSheetWidget({super.key});
@@ -33,10 +31,9 @@ class CustomBottomSheetWidget extends StatelessWidget {
           children: [
             Padding(
               padding: EdgeInsets.all(deviceHeight * 0.02),
-              child: Text(
+              child: const Text(
                 "Add Product",
-                style:
-                    const TextStyle(fontWeight: FontWeight.w500, fontSize: 24),
+                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 24),
               ),
             ),
             CustomFormWidget(
@@ -58,7 +55,7 @@ class CustomBottomSheetWidget extends StatelessWidget {
                     context: context,
                     initialDate: DateTime.now(),
                     pickerType: DateTimePickerType.datetime,
-                    options: BoardDateTimeOptions(
+                    options: const BoardDateTimeOptions(
                       languages: BoardPickerLanguages(
                         locale: 'en',
                         today: 'today',
@@ -67,9 +64,8 @@ class CustomBottomSheetWidget extends StatelessWidget {
                       ),
                       startDayOfWeek: DateTime.sunday,
                       pickerFormat: PickerFormat.ymd,
-                      activeColor: const Color.fromARGB(255, 255, 147, 6),
-                      backgroundDecoration:
-                          const BoxDecoration(color: Colors.white),
+                      activeColor: Color.fromARGB(255, 255, 147, 6),
+                      backgroundDecoration: BoxDecoration(color: Colors.white),
                     ),
                   );
 
@@ -153,37 +149,49 @@ class CustomBottomSheetWidget extends StatelessWidget {
             ),
             Padding(
               padding: EdgeInsets.symmetric(vertical: deviceHeight * 0.03),
-              child: CustomButtonWidget(
-                btnText: "save",
-                onPressed: () async {
-                  if (_controller.name.text.isEmpty ||
-                      _controller.description.text.isEmpty ||
-                      _controller.count.text.isEmpty ||
-                      _controller.createDate.text.isEmpty) {
-                    return;
-                  }
+              child: Obx(() {
+                if (_controller.isLoading.value) {
+                  return const CircularProgressIndicator();
+                } else {
+                  return CustomButtonWidget(
+                    btnText: "save",
+                    onPressed: () async {
+                      if (_controller.name.text.isEmpty ||
+                          _controller.description.text.isEmpty ||
+                          _controller.count.text.isEmpty ||
+                          _controller.createDate.text.isEmpty) {
+                        return;
+                      }
 
-                  await _homeController.create(
-                    Auth().currentUser!.uid,
-                    _controller.name.text,
-                    _controller.description.text,
-                    DateTime.parse(_controller.createDate.text),
-                    int.parse(_controller.count.text),
-                    _controller.dropdownValue.value,
-                    _controller.image.value,
+                      _controller.isLoading.value = true;
+
+                      try {
+                        await _homeController.create(
+                          Auth().currentUser!.uid,
+                          _controller.name.text,
+                          _controller.description.text,
+                          DateTime.parse(_controller.createDate.text),
+                          int.parse(_controller.count.text),
+                          _controller.dropdownValue.value,
+                          _controller.image.value,
+                        );
+
+                        _controller.name.clear();
+                        _controller.description.clear();
+                        _controller.createDate.clear();
+                        _controller.count.clear();
+                        _controller.image.value = null;
+
+                        _homeController.fetchProducts();
+                        Get.back();
+                      } finally {
+                        _controller.isLoading.value = false;
+                      }
+                    },
                   );
-
-                  _controller.name.clear();
-                  _controller.description.clear();
-                  _controller.createDate.clear();
-                  _controller.count.clear();
-                  _controller.image.value = null;
-
-                  _homeController.fetchProducts();
-                  Get.back();
-                },
-              ),
-            ),
+                }
+              }),
+            )
           ],
         ),
       ),

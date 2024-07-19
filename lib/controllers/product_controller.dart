@@ -5,6 +5,7 @@ import 'package:imtapp/models/product_model.dart';
 class ProductController extends GetxController {
   final Product product;
   var imageUrl = ''.obs;
+  var isLoading = true.obs;
 
   ProductController(this.product);
 
@@ -26,5 +27,6 @@ class ProductController extends GetxController {
     } else {
       imageUrl.value = 'assets/image/profile.png';
     }
+    isLoading.value = false;
   }
 }

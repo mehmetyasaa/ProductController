@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
 class CustomBottomSheetController extends GetxController {
+  var isLoading = false.obs;
   final TextEditingController name = TextEditingController();
   final TextEditingController description = TextEditingController();
   final TextEditingController createDate = TextEditingController();
