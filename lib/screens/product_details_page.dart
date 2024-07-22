@@ -19,7 +19,9 @@ class ProductDetailsPage extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: Text("Ürün Detayı"),
+      ),
       bottomNavigationBar: ButtonsBar(
         sendButtonText: "Gönder",
         onBuyButtonTapped: () {
@@ -79,18 +81,18 @@ class RoundedCornerImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: const BorderRadius.all(Radius.circular(20)),
-      child: Transform.translate(
-        offset: const Offset(0, -135),
-        child: Transform.scale(
-          scale: 1.1,
-          alignment: Alignment.topCenter,
-          child: isNetworkImage
-              ? Image.network(productImage)
-              : Image.asset(productImage),
-        ),
-      ),
+    return Container(
+      decoration: const BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(20))),
+      child: isNetworkImage
+          ? Image.network(
+              productImage,
+              fit: BoxFit.fitHeight,
+            )
+          : Image.asset(
+              productImage,
+              fit: BoxFit.fitHeight,
+            ),
     );
   }
 }
@@ -106,7 +108,7 @@ class CurvedCornerContainer extends StatelessWidget {
       clipper: FancyClipPath(),
       child: Container(
         constraints:
-            const BoxConstraints(minHeight: 400, maxHeight: 600, minWidth: 400),
+            const BoxConstraints(minHeight: 300, maxHeight: 800, minWidth: 400),
         color: Colors.white.withOpacity(0.97),
         child: child,
       ),
@@ -146,35 +148,41 @@ class DescriptionContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 90, right: 90, bottom: 20, top: 70),
+      padding: const EdgeInsets.only(left: 20, right: 40, bottom: 5, top: 30),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.end,
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Ürün Adı",
-            style: TextStyle(
-                fontSize: 25, fontWeight: FontWeight.w600, color: cOrange),
-          ),
-          Text(
             product.name,
-            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w500),
+            style: const TextStyle(fontSize: 30, fontWeight: FontWeight.w500),
           ),
           const SizedBox(height: 20),
           Text(
-            "Ürün Açıklaması",
-            style: TextStyle(
-                fontSize: 25, fontWeight: FontWeight.w500, color: cOrange),
-          ),
-          Text(
             product.description,
-            style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
+            style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w500,
+                color: Color.fromARGB(255, 140, 140, 140)),
           ),
-          const SizedBox(height: 25),
+          const SizedBox(height: 40),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              Column(
+                children: [
+                  const Text(
+                    "Tarih",
+                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
+                  ),
+                  Text(
+                    product.createDate,
+                    style: const TextStyle(
+                        fontSize: 17, fontWeight: FontWeight.w500),
+                  ),
+                ],
+              ),
               Column(
                 children: [
                   const Text(
@@ -202,16 +210,6 @@ class DescriptionContent extends StatelessWidget {
                 ],
               ),
             ],
-          ),
-          const SizedBox(height: 20),
-          Text(
-            "Tarih",
-            style: TextStyle(
-                fontSize: 22, fontWeight: FontWeight.w500, color: cOrange),
-          ),
-          Text(
-            product.createDate,
-            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
           ),
         ],
       ),

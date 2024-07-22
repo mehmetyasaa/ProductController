@@ -30,7 +30,6 @@ class HomePage extends StatelessWidget {
     double topPadding = deviceHeight * 0.07;
 
     return Scaffold(
-      // resizeToAvoidBottomInset: true,
       drawer: Drawer(
         child: SingleChildScrollView(
           child: Column(children: [
@@ -64,6 +63,32 @@ class HomePage extends StatelessWidget {
                 ],
               ),
             ),
+            Obx(() {
+              // Ensure uniqueness of projects
+              final projects = controller.sentProjects.toSet().toList();
+
+              return Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: DropdownButton<String>(
+                  isExpanded: true,
+                  hint: Text("Select a project".tr()),
+                  value: projects.contains(controller.selectedProject.value)
+                      ? controller.selectedProject.value
+                      : null,
+                  onChanged: (String? newValue) {
+                    if (newValue != null) {
+                      controller.updateSelectedProject(newValue);
+                    }
+                  },
+                  items: projects.map((String project) {
+                    return DropdownMenuItem<String>(
+                      value: project,
+                      child: Text(project),
+                    );
+                  }).toList(),
+                ),
+              );
+            }),
             drawerMethod(const Icon(Icons.exit_to_app), Text("Log Out".tr()),
                 () => Auth().signOute()),
             drawerMethod(
@@ -98,105 +123,101 @@ class HomePage extends StatelessWidget {
           ]),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: const Color.fromARGB(255, 249, 109, 49),
-        onPressed: () {
-          showModalBottomSheet(
-            isScrollControlled: true,
-            context: context,
-            backgroundColor: Colors.white,
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadiusDirectional.only(
-                topEnd: Radius.circular(25),
-                topStart: Radius.circular(25),
-              ),
-            ),
-            builder: (context) => Container(
-                padding: const EdgeInsetsDirectional.only(
-                  start: 20,
-                  end: 20,
-                  bottom: 20,
-                  top: 8,
+      floatingActionButton: Obx(
+        () => Visibility(
+          visible: controller.selectedProject.value == "imtapp16",
+          child: FloatingActionButton(
+            backgroundColor: const Color.fromARGB(255, 249, 109, 49),
+            onPressed: () {
+              showModalBottomSheet(
+                isScrollControlled: true,
+                context: context,
+                backgroundColor: Colors.white,
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadiusDirectional.only(
+                    topEnd: Radius.circular(25),
+                    topStart: Radius.circular(25),
+                  ),
                 ),
-                child: CustomBottomSheetWidget()),
-          );
-        },
-        child: const Icon(
-          Icons.add,
-          size: 30,
-          color: Colors.white,
+                builder: (context) => Container(
+                    padding: const EdgeInsetsDirectional.only(
+                      start: 20,
+                      end: 20,
+                      bottom: 20,
+                      top: 8,
+                    ),
+                    child: CustomBottomSheetWidget()),
+              );
+            },
+            child: const Icon(
+              Icons.add,
+              size: 30,
+              color: Colors.white,
+            ),
+          ),
         ),
       ),
       body: Obx(() {
-        if (controller.productList.isEmpty) {
-          return Center(
-              child: Text("Product Not Found".tr(),
-                  style: const TextStyle(
-                      color: Colors.orange,
-                      fontSize: 22,
-                      fontWeight: FontWeight.w600)));
-        } else {
-          final Map<String, List<Product>> groupedProducts =
-              controller.groupProductsByDate();
-          final List<String> sortedDates = groupedProducts.keys.toList()
-            ..sort((a, b) => parseDate(a).compareTo(parseDate(b)));
+        final Map<String, List<Product>> groupedProducts =
+            controller.groupProductsByDate();
+        final List<String> sortedDates = groupedProducts.keys.toList()
+          ..sort((a, b) => parseDate(a).compareTo(parseDate(b)));
 
-          return CustomScrollView(
-            slivers: <Widget>[
-              SliverAppBar(
-                expandedHeight: deviceHeight * 0.08,
-                title: const Text("İletişim Yazılım"),
-                flexibleSpace: FlexibleSpaceBar(
-                  background: ClipRRect(
-                    borderRadius: const BorderRadius.vertical(
-                      bottom: Radius.circular(30),
-                    ),
-                    child: Container(
-                      color: Colors.orange,
-                      height: 100,
-                    ),
+        return CustomScrollView(
+          slivers: <Widget>[
+            SliverAppBar(
+              expandedHeight: deviceHeight * 0.08,
+              title: const Text("İletişim Yazılım"),
+              flexibleSpace: FlexibleSpaceBar(
+                background: ClipRRect(
+                  borderRadius: const BorderRadius.vertical(
+                    bottom: Radius.circular(30),
+                  ),
+                  child: Container(
+                    color: Colors.orange,
+                    height: 100,
                   ),
                 ),
               ),
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: EdgeInsets.all(deviceHeight * 0.02),
-                  child: TextField(
-                    maxLength: 30,
-                    onChanged: (value) {
-                      controller.filterSearchResult(value);
-                    },
-                    controller: search,
-                    decoration: InputDecoration(
-                      labelText: "Search".tr(),
-                      hintText: "Write to search".tr(),
-                      prefixIcon: const Icon(Icons.search),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(
-                            Radius.circular(deviceHeight * 0.02)),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    final String dateString = sortedDates[index];
-                    final DateTime date = parseDate(dateString);
-                    final List<Product> products = groupedProducts[dateString]!;
-                    return DateProductWidget(
-                      date: date,
-                      products: products,
-                      formattedDate: dateString,
-                    );
+            ),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: EdgeInsets.all(deviceHeight * 0.02),
+                child: TextField(
+                  maxLength: 30,
+                  onChanged: (value) {
+                    controller.filterSearchResult(value);
                   },
-                  childCount: sortedDates.length,
+                  controller: search,
+                  decoration: InputDecoration(
+                    labelText: "Search".tr(),
+                    hintText: "Write to search".tr(),
+                    prefixIcon: const Icon(Icons.search),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(
+                          Radius.circular(deviceHeight * 0.02)),
+                    ),
+                  ),
                 ),
               ),
-            ],
-          );
-        }
+            ),
+            SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (context, index) {
+                  final String dateString = sortedDates[index];
+                  final DateTime date = parseDate(dateString);
+                  final List<Product> products = groupedProducts[dateString]!;
+                  return DateProductWidget(
+                    date: date,
+                    products: products,
+                    formattedDate: dateString,
+                  );
+                },
+                childCount: sortedDates.length,
+              ),
+            ),
+          ],
+        );
       }),
     );
   }

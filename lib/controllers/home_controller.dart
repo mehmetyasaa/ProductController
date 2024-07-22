@@ -1,6 +1,6 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get/get.dart';
@@ -11,61 +11,42 @@ import 'package:intl/intl.dart';
 class HomeController extends GetxController {
   RxList<Product> productList = RxList<Product>([]);
   RxList<Product> filteredProducts = RxList<Product>([]);
+  RxList<String> sentProjects = RxList<String>([]);
+  RxString selectedProject = 'imtapp16'.obs;
+
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final Map<Product, String> productDocumentIds = {};
+  final Dio _dio = Dio();
+  final String projectName = 'imtapp16';
 
   HomeController() {
     Auth().authStateChanges.listen((User? user) {
       if (user == null) {
         clearProducts();
       } else {
-        fetchProducts();
+        fetchSentProjects();
+        fetchProducts(); // Fetch products after fetching projects
       }
     });
   }
 
-  Future<Product> fetchLatestProduct(String productId) async {
-    User? currentUser = Auth().currentUser;
-    if (currentUser == null) {
-      throw Exception("No user is currently signed in");
-    }
-    String uid = currentUser.uid;
-
-    DocumentSnapshot userDoc =
-        await _firestore.collection('users').doc(uid).get();
-    Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;
-
-    if (userData.containsKey('products')) {
-      List<dynamic> userProducts = userData['products'];
-
-      for (var productData in userProducts) {
-        if (productData['id'] == productId) {
-          return Product(
-            id: productData['id'],
-            name: productData['name'],
-            description: productData['description'],
-            createDate: productData['createDate'],
-            count: productData['count'],
-            unit: productData['unit'],
-            status: productData['status'],
-            image: productData['image'],
-          );
-        }
-      }
-    }
-    throw Exception("Product not found");
+  void updateSelectedProject(String project) {
+    selectedProject.value = project;
+    addProjectToSentProjects(project);
+    fetchProducts();
   }
 
   void clearProducts() {
     productList.clear();
     filteredProducts.clear();
     productDocumentIds.clear();
+    sentProjects.clear();
   }
 
   @override
   void onInit() {
     super.onInit();
-    fetchProducts();
+    fetchSentProjects(); // Fetch projects first
   }
 
   void deleteProduct(Product product) async {
@@ -97,41 +78,159 @@ class HomeController extends GetxController {
   void editProduct(Product product) {
     // Implement your edit logic here
   }
+  Future<Product> fetchLatestProduct(String productId) async {
+    User? currentUser = Auth().currentUser;
+    if (currentUser == null) {
+      throw Exception('No user is currently signed in');
+    }
+    String uid = currentUser.uid;
 
-  void fetchProducts() async {
+    try {
+      DocumentSnapshot<Map<String, dynamic>> userDoc =
+          await _firestore.collection("users").doc(uid).get();
+
+      if (userDoc.exists) {
+        List<dynamic>? userProducts =
+            userDoc.data()?["products"] as List<dynamic>? ?? [];
+
+        for (var productData in userProducts) {
+          if (productData["id"] == productId) {
+            return Product(
+              id: productData['id'],
+              name: productData['name'],
+              description: productData['description'],
+              createDate: productData['createDate'],
+              count: productData['count'],
+              unit: productData['unit'],
+              status: productData['status'],
+              image: productData['image'],
+            );
+          }
+        }
+      }
+    } catch (e) {
+      print('Error fetching latest product: $e');
+      throw Exception('Failed to fetch the latest product');
+    }
+
+    throw Exception('Product not found');
+  }
+
+  Future<void> fetchProducts() async {
     User? currentUser = Auth().currentUser;
     if (currentUser == null) {
       print('No user is currently signed in');
       return;
     }
     String uid = currentUser.uid;
+    String defaultProjectName = "imtapp16";
 
-    DocumentSnapshot userDoc =
-        await _firestore.collection('users').doc(uid).get();
+    String projectName = selectedProject.value.isNotEmpty
+        ? selectedProject.value
+        : defaultProjectName;
+    if (projectName == defaultProjectName) {
+      try {
+        String apiUrl =
+            'https://firestore.googleapis.com/v1/projects/$projectName/databases/(default)/documents/users/$uid';
 
-    List<Product> products = [];
-    Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;
+        final response = await _dio.get(apiUrl);
 
-    if (userData.containsKey('products')) {
-      List<dynamic> userProducts = userData['products'];
+        if (response.statusCode == 200) {
+          Map<String, dynamic>? userData = response.data['fields'];
 
-      for (var productData in userProducts) {
-        Product product = Product(
-          id: productData['id'],
-          name: productData['name'],
-          description: productData['description'],
-          createDate: productData['createDate'],
-          count: productData['count'],
-          unit: productData['unit'],
-          image: productData['image'],
-        );
-        productDocumentIds[product] = userDoc.id;
-        products.add(product);
+          if (userData == null) {
+            print('User data is null');
+            return;
+          }
+
+          List<Product> products = [];
+
+          if (userData.containsKey('products')) {
+            List<dynamic>? userProducts =
+                userData['products']['arrayValue']['values'];
+
+            if (userProducts != null) {
+              for (var productData in userProducts) {
+                if (productData == null || productData['mapValue'] == null) {
+                  print('Product data or map value is null');
+                  continue;
+                }
+                Product product = Product(
+                  id: productData['mapValue']['fields']['id']['stringValue'],
+                  name: productData['mapValue']['fields']['name']
+                      ['stringValue'],
+                  description: productData['mapValue']['fields']['description']
+                      ['stringValue'],
+                  createDate: productData['mapValue']['fields']['createDate']
+                      ['stringValue'],
+                  count: int.parse(productData['mapValue']['fields']['count']
+                      ['integerValue']),
+                  unit: productData['mapValue']['fields']['unit']
+                      ['stringValue'],
+                  status: productData['mapValue']['fields']['status']
+                      ['booleanValue'],
+                  image: productData['mapValue']['fields']['image']
+                      ['stringValue'],
+                );
+                products.add(product);
+              }
+            } else {
+              print('User products is null');
+            }
+          }
+
+          productList.value = products;
+          filteredProducts.value = products;
+        } else {
+          print('Failed to fetch products. HTTP ${response.statusCode}');
+          print(response.data);
+        }
+      } catch (e) {
+        print('Error fetching products: $e');
+      }
+    } else {
+      try {
+        String apiUrl =
+            'https://firestore.googleapis.com/v1/projects/$projectName/databases/(default)/documents/products/';
+
+        final response = await _dio.get(apiUrl);
+
+        if (response.statusCode == 200) {
+          List<dynamic> documents = response.data['documents'];
+
+          if (documents == null) {
+            print('User data is null');
+            return;
+          }
+
+          List<Product> products = [];
+
+          for (var doc in documents) {
+            Map<String, dynamic> productData = doc['fields'];
+
+            Product product = Product(
+              id: productData['id']['stringValue'],
+              name: productData['name']['stringValue'],
+              description: productData['description']['stringValue'],
+              createDate: productData['createDate']['stringValue'],
+              count: int.parse(productData['count']['integerValue']),
+              unit: productData['unit']['stringValue'],
+              status: productData['status']['booleanValue'],
+              image: productData['image']['stringValue'],
+            );
+            products.add(product);
+          }
+
+          productList.value = products;
+          filteredProducts.value = products;
+        } else {
+          print('Failed to fetch products. HTTP ${response.statusCode}');
+          print(response.data);
+        }
+      } catch (e) {
+        print('Error fetching products: $e');
       }
     }
-
-    productList.value = products;
-    filteredProducts.value = products;
   }
 
   Future<void> create(
@@ -175,7 +274,6 @@ class HomeController extends GetxController {
       "createDate": formattedCreateDate,
       "unit": unit,
       "status": true,
-      // ignore: unnecessary_null_comparison
       "image": imageUrl,
     };
 
@@ -226,6 +324,7 @@ class HomeController extends GetxController {
     } catch (e) {
       print("Error updating product status: $e");
     }
+    fetchProducts();
   }
 
   void filterSearchResult(String query) {
@@ -295,4 +394,50 @@ class HomeController extends GetxController {
       print('Veri aktarımı sırasında hata: $e');
     }
   }
+
+  // Fetch sentProjects from Firestore
+  Future<void> fetchSentProjects() async {
+    User? currentUser = Auth().currentUser;
+    if (currentUser == null) {
+      print('No user is currently signed in');
+      return;
+    }
+    String uid = currentUser.uid;
+
+    try {
+      DocumentSnapshot<Map<String, dynamic>> userDoc =
+          await _firestore.collection("users").doc(uid).get();
+
+      if (userDoc.exists) {
+        List<dynamic>? projects =
+            userDoc.data()?["sentProjects"] as List<dynamic>?;
+        if (projects != null) {
+          sentProjects.value = List<String>.from(projects);
+        }
+      }
+    } catch (e) {
+      print('Error fetching sent projects: $e');
+    }
+  }
+
+  Future<void> addProjectToSentProjects(String project) async {
+    User? currentUser = Auth().currentUser;
+    if (currentUser == null) {
+      print('No user is currently signed in');
+      return;
+    }
+    String uid = currentUser.uid;
+
+    sentProjects.add(project);
+
+    try {
+      await _firestore.collection("users").doc(uid).update({
+        "sentProjects": FieldValue.arrayUnion([project])
+      });
+    } catch (e) {
+      print('Error updating sent projects: $e');
+    }
+  }
+
+  // Other existing methods remain the same...
 }

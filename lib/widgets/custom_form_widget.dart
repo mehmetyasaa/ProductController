@@ -6,11 +6,14 @@ class CustomFormWidget extends StatelessWidget {
     required this.controller,
     required this.labelText,
     required this.icon,
+    this.validator,
   });
 
   final TextEditingController? controller;
   final String labelText;
   final Widget icon;
+  final String? Function(String?)? validator; // Added validator parameter
+
   @override
   Widget build(BuildContext context) {
     final MediaQueryData mediaQueryData = MediaQuery.of(context);
@@ -21,11 +24,13 @@ class CustomFormWidget extends StatelessWidget {
         textInputAction: TextInputAction.next,
         controller: controller,
         decoration: InputDecoration(
-            labelText: labelText,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(22),
-            ),
-            prefixIcon: icon),
+          labelText: labelText,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(22),
+          ),
+          prefixIcon: icon,
+        ),
+        validator: validator, // Added validator
       ),
     );
   }

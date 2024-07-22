@@ -50,8 +50,7 @@ class DateProductWidget extends StatelessWidget {
                     backgroundColor: Colors.green,
                     icon: Icons.send,
                     label: "Gönder",
-                    onPressed: (context) async {
-                      // Fetch the latest product data
+                    onPressed: (slidableContext) async {
                       Product latestProduct = await Get.find<HomeController>()
                           .fetchLatestProduct(product.id);
 
@@ -64,9 +63,8 @@ class DateProductWidget extends StatelessWidget {
                         );
                       } else {
                         showDialog(
-                          // ignore: use_build_context_synchronously
                           context: context,
-                          builder: (BuildContext context) {
+                          builder: (BuildContext dialogContext) {
                             TextEditingController messageController =
                                 TextEditingController();
 
@@ -127,10 +125,10 @@ class DateProductWidget extends StatelessWidget {
                     backgroundColor: Colors.red,
                     icon: Icons.delete,
                     label: "delete".tr(),
-                    onPressed: (context) {
+                    onPressed: (slidableContext) {
                       showDialog(
                         context: context,
-                        builder: (BuildContext context) {
+                        builder: (BuildContext dialogContext) {
                           return AlertDialog(
                             title: Text('delete'.tr()),
                             content: Text(
@@ -164,7 +162,7 @@ class DateProductWidget extends StatelessWidget {
                     backgroundColor: const Color.fromARGB(255, 255, 218, 194),
                     icon: Icons.published_with_changes,
                     label: "Status Change",
-                    onPressed: (context) =>
+                    onPressed: (slidableContext) =>
                         onDismissed(product, Actions.passive),
                   )
                 ],
@@ -199,12 +197,26 @@ class DateProductWidget extends StatelessWidget {
                 title: Padding(
                   padding:
                       EdgeInsets.only(left: isFirst ? 0 : deviceHeight * 0.075),
-                  child: Text(
-                    product.name,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w800,
-                      fontSize: 17,
-                    ),
+                  child: Row(
+                    children: [
+                      Text(
+                        product.name,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w800,
+                          fontSize: 17,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10),
+                        child: Icon(
+                          Icons.circle,
+                          size: 15,
+                          color: product.status == true
+                              ? const Color.fromARGB(255, 82, 198, 86)
+                              : const Color.fromARGB(255, 255, 77, 77),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 subtitle: Padding(

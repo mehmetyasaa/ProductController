@@ -1,9 +1,13 @@
 import 'dart:convert';
 // ignore: depend_on_referenced_packages
+import 'package:get/get.dart';
+// ignore: depend_on_referenced_packages
 import 'package:http/http.dart' as http;
+import 'package:imtapp/controllers/home_controller.dart';
 import 'package:imtapp/models/product_model.dart';
 
 class ApiService {
+  final HomeController _homeController = Get.find<HomeController>();
   Future<void> checkAndCreateProductInApi(Product product,
       {String projeName = ""}) async {
     try {
@@ -35,6 +39,10 @@ class ApiService {
 
         if (createResponse.statusCode == 200) {
           print('Ürün başarıyla oluşturuldu.');
+          if (!_homeController.sentProjects.contains(projeName)) {
+            _homeController.sentProjects.add(projeName);
+          }
+          _homeController.addProjectToSentProjects(projeName);
         } else {
           print(
               'Ürün oluşturulurken hata oluştu. HTTP ${createResponse.statusCode}');
