@@ -67,6 +67,8 @@ class DateProductWidget extends StatelessWidget {
                           builder: (BuildContext dialogContext) {
                             TextEditingController messageController =
                                 TextEditingController();
+                            String selectedDatabase =
+                                'Firebase'; // default selection
 
                             return AlertDialog(
                               title: Text(
@@ -92,10 +94,26 @@ class DateProductWidget extends StatelessWidget {
                                       ),
                                     ),
                                   ),
+                                  DropdownButtonFormField<String>(
+                                    value: selectedDatabase,
+                                    items:
+                                        ['Firebase', 'SQL'].map((String value) {
+                                      return DropdownMenuItem<String>(
+                                        value: value,
+                                        child: Text(value),
+                                      );
+                                    }).toList(),
+                                    onChanged: (String? newValue) {
+                                      selectedDatabase = newValue!;
+                                    },
+                                    decoration: const InputDecoration(
+                                      labelText: 'Veri Tabanı ',
+                                    ),
+                                  ),
                                   TextFormField(
                                     controller: messageController,
                                     decoration: const InputDecoration(
-                                      labelText: 'Veri Tabanı Adı',
+                                      labelText: 'Proje/Tablo Adı',
                                     ),
                                   ),
                                 ],
@@ -107,9 +125,17 @@ class DateProductWidget extends StatelessWidget {
                                 ),
                                 TextButton(
                                   onPressed: () {
-                                    ApiService().checkAndCreateProductInApi(
-                                        latestProduct,
-                                        projeName: messageController.text);
+                                    if (selectedDatabase == 'Firebase') {
+                                      ApiService().checkAndCreateProductInApi(
+                                          latestProduct,
+                                          projeName: messageController.text);
+                                      Get.back();
+                                    } else {
+                                      // Call your SQL API service
+                                      ApiService().checkAndCreateProductInSql(
+                                          latestProduct,
+                                          projeName: messageController.text);
+                                    }
                                     Get.back();
                                   },
                                   child: const Text('Gönder'),

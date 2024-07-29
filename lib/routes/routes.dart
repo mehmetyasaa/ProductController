@@ -1,4 +1,5 @@
 import 'package:get/get_navigation/get_navigation.dart';
+import 'package:imtapp/deneme.dart';
 import 'package:imtapp/screens/home_page.dart';
 import 'package:imtapp/screens/login.dart';
 import 'package:imtapp/screens/signup.dart';
@@ -8,14 +9,17 @@ class RoutesClass {
   static String signup = "/signup";
   static String login = "/login";
   static String details = "/details";
+  static String deneme = "/deneme";
 
   static String getHomeRoute() => home;
   static String getSignupRoute() => signup;
   static String getLoginRoute() => login;
   static String getDetailsRoute() => details;
+  static String getDenemeRoute() => deneme;
 
   static List<GetPage> routes = [
     GetPage(name: home, page: () => HomePage()),
+    GetPage(name: deneme, page: () => AddProductPage()),
     GetPage(
         name: login,
         page: () => LoginPage(),

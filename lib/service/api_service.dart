@@ -96,4 +96,28 @@ class ApiService {
       print('Hata: $e');
     }
   }
+
+  void checkAndCreateProductInSql(Product product,
+      {required String projeName}) async {
+    final url = Uri.parse('http://localhost:3000/product');
+    try {
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({
+          'name': product.name,
+          'count': product.count,
+          "description": product.description,
+          'createDate': product.createDate,
+          'id': product.id,
+          'image': product.image,
+          'status': product.status,
+          'unit': product.unit,
+        }),
+      );
+
+      if (response.statusCode == 201) {
+      } else {}
+    } catch (e) {}
+  }
 }

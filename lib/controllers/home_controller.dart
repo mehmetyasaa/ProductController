@@ -6,6 +6,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get/get.dart';
 import 'package:imtapp/firebase/auth.dart';
 import 'package:imtapp/models/product_model.dart';
+// ignore: depend_on_referenced_packages
 import 'package:intl/intl.dart';
 
 class HomeController extends GetxController {
@@ -197,11 +198,6 @@ class HomeController extends GetxController {
 
         if (response.statusCode == 200) {
           List<dynamic> documents = response.data['documents'];
-
-          if (documents == null) {
-            print('User data is null');
-            return;
-          }
 
           List<Product> products = [];
 

@@ -20,7 +20,7 @@ class ProductDetailsPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text("Ürün Detayı"),
+        title: const Text("Ürün Detayı"),
       ),
       bottomNavigationBar: ButtonsBar(
         sendButtonText: "Gönder",
