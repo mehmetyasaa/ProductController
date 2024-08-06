@@ -5,11 +5,11 @@ import 'package:get/get.dart'
     hide
         Trans; //getx ve easy local'de string.tr() kullanımı çakıştığından hide kullandım
 import 'package:google_fonts/google_fonts.dart';
-import 'package:imtapp/controllers/password_controller.dart';
-import 'package:imtapp/firebase/auth.dart';
-import 'package:imtapp/routes/routes.dart';
-import 'package:imtapp/widgets/custom_button_widget.dart';
-import 'package:imtapp/widgets/custom_form_widget.dart';
+import 'package:productcontroler/controllers/password_controller.dart';
+import 'package:productcontroler/firebase/auth.dart';
+import 'package:productcontroler/routes/routes.dart';
+import 'package:productcontroler/widgets/custom_button_widget.dart';
+import 'package:productcontroler/widgets/custom_form_widget.dart';
 import 'package:lottie/lottie.dart';
 
 // ignore: must_be_immutable

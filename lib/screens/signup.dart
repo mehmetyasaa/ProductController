@@ -3,9 +3,9 @@ import 'package:easy_localization/easy_localization.dart';
 import "package:flutter/material.dart";
 import 'package:get/route_manager.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:imtapp/firebase/auth.dart';
-import 'package:imtapp/routes/routes.dart';
-import 'package:imtapp/widgets/custom_button_widget.dart';
+import 'package:productcontroler/firebase/auth.dart';
+import 'package:productcontroler/routes/routes.dart';
+import 'package:productcontroler/widgets/custom_button_widget.dart';
 import 'package:lottie/lottie.dart';
 
 class SignupPage extends StatelessWidget {

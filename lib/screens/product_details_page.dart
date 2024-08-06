@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:imtapp/controllers/product_controller.dart';
-import 'package:imtapp/models/product_model.dart';
-import 'package:imtapp/service/api_service.dart';
+import 'package:productcontroler/controllers/product_controller.dart';
+import 'package:productcontroler/models/product_model.dart';
+import 'package:productcontroler/service/api_service.dart';
 
 class ProductDetailsPage extends StatelessWidget {
   final Product product;

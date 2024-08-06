@@ -1,4 +1,4 @@
-name: imtapp
+name: productcontroler
 description: "A new Flutter project."
 
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
@@ -18,7 +18,6 @@ dependencies:
   get: ^4.6.6
   lottie: ^3.1.2
   google_fonts: ^6.2.1
-  flutter_native_splash: ^2.4.0
   flutter_slidable: ^3.1.1
   easy_localization: ^3.0.7
   board_datetime_picker: ^2.0.0
@@ -34,30 +33,24 @@ dependencies:
   firebase_storage: ^12.1.1
 
   dio: ^5.5.0+1
-flutter_native_splash:
-  android: true
-  ios: true
-  web: false
-  background_image: "assets/image/imtBackground.png"
-  image: "assets/image/imt.png"
 
-flutter_launcher_icons:
-  android: "launcher_icon"
-  ios: true
-  image_path: "assets/image/imtLogo.png"
-  min_sdk_android: 21
-  web:
-    generate: true
-    image_path: "path/to/image.png"
-    background_color: "#hexcode"
-    theme_color: "#hexcode"
-  windows:
-    generate: true
-    image_path: "path/to/image.png"
-    icon_size: 48 # min:48, max:256, default: 48
-  macos:
-    generate: true
-    image_path: "path/to/image.png"
+# flutter_launcher_icons:
+#   android: "launcher_icon"
+#   ios: true
+#   image_path: "assets/image/imtLogo.png"
+#   min_sdk_android: 21
+#   web:
+#     generate: true
+#     image_path: "path/to/image.png"
+#     background_color: "#hexcode"
+#     theme_color: "#hexcode"
+#   windows:
+#     generate: true
+#     image_path: "path/to/image.png"
+#     icon_size: 48 # min:48, max:256, default: 48
+#   macos:
+#     generate: true
+#     image_path: "path/to/image.png"
 
 dev_dependencies:
   flutter_test:

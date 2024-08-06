@@ -4,8 +4,8 @@ import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get/get.dart';
-import 'package:imtapp/firebase/auth.dart';
-import 'package:imtapp/models/product_model.dart';
+import 'package:productcontroler/firebase/auth.dart';
+import 'package:productcontroler/models/product_model.dart';
 // ignore: depend_on_referenced_packages
 import 'package:intl/intl.dart';
 

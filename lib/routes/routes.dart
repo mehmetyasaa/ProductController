@@ -1,8 +1,7 @@
 import 'package:get/get_navigation/get_navigation.dart';
-import 'package:imtapp/deneme.dart';
-import 'package:imtapp/screens/home_page.dart';
-import 'package:imtapp/screens/login.dart';
-import 'package:imtapp/screens/signup.dart';
+import 'package:productcontroler/screens/home_page.dart';
+import 'package:productcontroler/screens/login.dart';
+import 'package:productcontroler/screens/signup.dart';
 
 class RoutesClass {
   static String home = "/";
@@ -19,7 +18,6 @@ class RoutesClass {
 
   static List<GetPage> routes = [
     GetPage(name: home, page: () => HomePage()),
-    GetPage(name: deneme, page: () => AddProductPage()),
     GetPage(
         name: login,
         page: () => LoginPage(),

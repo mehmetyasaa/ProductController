@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:imtapp/models/product_model.dart';
+import 'package:productcontroler/models/product_model.dart';
 
 class ProductController extends GetxController {
   final Product product;

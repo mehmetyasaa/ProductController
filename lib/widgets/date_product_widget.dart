@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart' hide Trans;
 import 'package:easy_localization/easy_localization.dart';
-import 'package:imtapp/controllers/home_controller.dart';
-import 'package:imtapp/models/product_model.dart';
-import 'package:imtapp/screens/product_details_page.dart';
-import 'package:imtapp/service/api_service.dart';
+import 'package:productcontroler/controllers/home_controller.dart';
+import 'package:productcontroler/models/product_model.dart';
+import 'package:productcontroler/screens/product_details_page.dart';
+import 'package:productcontroler/service/api_service.dart';
 
 enum Actions { delete, send, passive }
 

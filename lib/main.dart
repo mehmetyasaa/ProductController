@@ -1,23 +1,24 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
+
 import 'package:get/get_navigation/src/root/get_material_app.dart';
-import 'package:imtapp/firebase/auth.dart';
-import 'package:imtapp/firebase_options.dart';
-import 'package:imtapp/lang/constants.dart';
-import 'package:imtapp/routes/routes.dart';
+import 'package:productcontroler/firebase/auth.dart';
+import 'package:productcontroler/firebase_options.dart';
+import 'package:productcontroler/lang/constants.dart';
+import 'package:productcontroler/routes/routes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
 
-  FlutterNativeSplash.preserve(
-      widgetsBinding: WidgetsFlutterBinding.ensureInitialized());
-  await Future.delayed(
-    const Duration(seconds: 3),
-  );
-  FlutterNativeSplash.remove();
+  //splash screen
+  // FlutterNativeSplash.preserve(
+  //     widgetsBinding: WidgetsFlutterBinding.ensureInitialized());
+  // await Future.delayed(
+  //   const Duration(seconds: 3),
+  // );
+  // FlutterNativeSplash.remove();
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,

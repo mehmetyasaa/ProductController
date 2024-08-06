@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide Trans;
-import 'package:imtapp/firebase/auth.dart';
+import 'package:productcontroler/firebase/auth.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:imtapp/controllers/home_controller.dart';
-import 'package:imtapp/widgets/custom_bottomSheet_widget.dart';
-import 'package:imtapp/widgets/date_product_widget.dart';
-import 'package:imtapp/models/product_model.dart';
+import 'package:productcontroler/controllers/home_controller.dart';
+import 'package:productcontroler/widgets/custom_bottomSheet_widget.dart';
+import 'package:productcontroler/widgets/date_product_widget.dart';
+import 'package:productcontroler/models/product_model.dart';
 
 // ignore: must_be_immutable
 class HomePage extends StatelessWidget {

@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:get/get.dart';
 // ignore: depend_on_referenced_packages
 import 'package:http/http.dart' as http;
-import 'package:imtapp/controllers/home_controller.dart';
-import 'package:imtapp/models/product_model.dart';
+import 'package:productcontroler/controllers/home_controller.dart';
+import 'package:productcontroler/models/product_model.dart';
 
 class ApiService {
   final HomeController _homeController = Get.find<HomeController>();

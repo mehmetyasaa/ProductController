@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:board_datetime_picker/board_datetime_picker.dart';
 import 'package:get/get.dart';
-import 'package:imtapp/controllers/CustomBottomSheetController.dart';
-import 'package:imtapp/firebase/auth.dart';
-import 'package:imtapp/widgets/custom_form_widget.dart';
-import 'package:imtapp/controllers/home_controller.dart';
+import 'package:productcontroler/controllers/CustomBottomSheetController.dart';
+import 'package:productcontroler/firebase/auth.dart';
+import 'package:productcontroler/widgets/custom_form_widget.dart';
+import 'package:productcontroler/controllers/home_controller.dart';
 
 class CustomBottomSheetWidget extends StatelessWidget {
   CustomBottomSheetWidget({super.key});
